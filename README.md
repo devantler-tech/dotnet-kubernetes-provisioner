@@ -7,7 +7,7 @@
 ```
 .
 └── .github
-    └── workflows
+    └── workflows
 
 2 directories
 ```
