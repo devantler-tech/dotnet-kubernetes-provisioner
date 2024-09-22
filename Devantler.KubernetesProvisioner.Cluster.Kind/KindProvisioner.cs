@@ -2,13 +2,24 @@
 
 namespace Devantler.KubernetesProvisioner.Cluster.Kind;
 
+/// <summary>
+/// A Kubernetes cluster provisioner for Kind.
+/// </summary>
 public class KindProvisioner : IKubernetesClusterProvisioner
 {
-  public Task DeprovisionAsync(string clusterName, CancellationToken cancellationToken)
-  {
+  /// <inheritdoc />
+  public async Task DeprovisionAsync(string clusterName, CancellationToken cancellationToken) =>
+    await KindCLI.Kind.DeleteClusterAsync(clusterName, cancellationToken).ConfigureAwait(false);
 
-  }
-  public Task<bool> ExistsAsync(string clusterName, CancellationToken cancellationToken) => throw new NotImplementedException();
-  public Task ListAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
-  public Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken) => throw new NotImplementedException();
+  /// <inheritdoc />
+  public async Task<bool> ExistsAsync(string clusterName, CancellationToken cancellationToken) =>
+    await KindCLI.Kind.GetClusterAsync(clusterName, cancellationToken).ConfigureAwait(false);
+
+  /// <inheritdoc />
+  public async Task ListAsync(CancellationToken cancellationToken) =>
+    await KindCLI.Kind.ListClustersAsync(cancellationToken).ConfigureAwait(false);
+
+  /// <inheritdoc />
+  public async Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken) =>
+    await KindCLI.Kind.CreateClusterAsync(clusterName, configPath, cancellationToken).ConfigureAwait(false);
 }

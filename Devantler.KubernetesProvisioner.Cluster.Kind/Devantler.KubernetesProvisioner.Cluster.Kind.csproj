@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Devantler.KindCLI" Version="0.0.1" />
+    <PackageReference Include="Devantler.KindCLI" Version="0.0.3" />
   </ItemGroup>
 
   <ItemGroup>

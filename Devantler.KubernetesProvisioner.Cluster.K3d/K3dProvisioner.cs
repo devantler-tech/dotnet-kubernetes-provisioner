@@ -3,7 +3,7 @@
 namespace Devantler.KubernetesProvisioner.Cluster.K3d;
 
 /// <summary>
-/// A Kubernetes cluster provisioner for k3d.
+/// A Kubernetes cluster provisioner for K3d.
 /// </summary>
 public class K3dProvisioner : IKubernetesClusterProvisioner
 {
@@ -19,7 +19,7 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
   public async Task ListAsync(CancellationToken cancellationToken) =>
     await K3dCLI.K3d.ListClustersAsync(cancellationToken).ConfigureAwait(false);
 
-
   /// <inheritdoc />
-  public Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken) => throw new NotImplementedException();
+  public async Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken) =>
+    await K3dCLI.K3d.CreateClusterAsync(clusterName, configPath, cancellationToken).ConfigureAwait(false);
 }
