@@ -1,21 +1,27 @@
-# 🌐 .NET Kubernetes Provisioner
+# ☸️ .NET Kubernetes Provisioner
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Test](https://github.com/devantler/dotnet-kubernetes-provisioner/actions/workflows/test.yaml/badge.svg)](https://github.com/devantler/dotnet-kubernetes-provisioner/actions/workflows/test.yaml)
+[![codecov](https://codecov.io/gh/devantler/dotnet-kubernetes-provisioner/graph/badge.svg?token=RhQPb4fE7z)](https://codecov.io/gh/devantler/dotnet-kubernetes-provisioner)
+
+Simple provisioners that can provision Kubernetes and Kubernetes resources.
 
 <details>
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
+
 ```
 .
-└── .github
-    └── workflows
+├── .github
+│   └── workflows
 
-2 directories
+121 directories
 ```
+
 <!-- readme-tree end -->
 
 </details>
-
-A simple .NET template for new projects.
 
 ## Prerequisites
 
@@ -23,46 +29,24 @@ A simple .NET template for new projects.
 
 ## 🚀 Getting Started
 
-To get started, you can install the package from NuGet.
+To get started, you can install the packages from NuGet.
 
 ```bash
-dotnet add package <package-name>
+# For provisioning a K3d cluster
+dotnet add package Devantler.KubernetesProvisioner.Cluster.K3d
+
+# For provisioning a Kind cluster
+dotnet add package Devantler.KubernetesProvisioner.Cluster.Kind
 ```
 
-## 📝 Usage
+## Usage
 
-### Add a solution
+To use the provisioners, all you need to do is to create and use a new instance of the provisioner.
 
-```sh
-dotnet new sln --name <name-of-solution>
-```
+```csharp
+using Devantler.KubernetesProvisioner.Cluster.K3d;
 
-### Add a project
+var provisioner = new K3dProvisioner();
 
-```sh
-dotnet new <project-type> --output folder1/folder2/<name-of-project>
-```
-
-### Add project to solution
-
-```sh
-dotnet sln add folder1/folder2/<name-of-project>
-```
-
-### Building your solution
-
-```sh
-dotnet build
-```
-
-### Running a project in your solution
-
-```sh
-dotnet run folder1/folder2/<name-of-project>
-```
-
-### Testing your solution
-
-```sh
-dotnet test
+await provisioner.ProvisionAsync("my-cluster", "path/to/config.yaml", CancellationToken.None);
 ```
