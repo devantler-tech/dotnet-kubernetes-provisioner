@@ -21,12 +21,16 @@ public class AllMethodsTests
     // Act
     var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.ProvisionAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
     string[] clusters = await _k3dProvisioner.ListAsync(CancellationToken.None);
+    var stopClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.StopAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
+    var startClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.StartAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
     bool clusterExists = await _k3dProvisioner.ExistsAsync(clusterName, CancellationToken.None);
 
     // Assert
     Assert.Null(createClusterException);
     string expectedClusterName = Assert.Single(clusters);
     Assert.Equal(clusterName, expectedClusterName);
+    Assert.Null(stopClusterException);
+    Assert.Null(startClusterException);
     Assert.True(clusterExists);
 
     // Cleanup

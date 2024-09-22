@@ -21,6 +21,20 @@ public interface IKubernetesClusterProvisioner
   Task DeprovisionAsync(string clusterName, CancellationToken cancellationToken);
 
   /// <summary>
+  /// Starts a Kubernetes cluster.
+  /// </summary>
+  /// <param name="clusterName"></param>
+  /// <param name="cancellationToken"></param>
+  Task StartAsync(string clusterName, CancellationToken cancellationToken);
+
+  /// <summary>
+  /// Stops a Kubernetes cluster.
+  /// </summary>
+  /// <param name="clusterName"></param>
+  /// <param name="cancellationToken"></param>
+  Task StopAsync(string clusterName, CancellationToken cancellationToken);
+
+  /// <summary>
   /// Lists all Kubernetes clusters.
   /// </summary>
   /// <param name="cancellationToken"></param>

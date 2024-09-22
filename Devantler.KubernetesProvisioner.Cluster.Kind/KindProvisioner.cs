@@ -22,4 +22,12 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   /// <inheritdoc />
   public async Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken) =>
     await KindCLI.Kind.CreateClusterAsync(clusterName, configPath, cancellationToken).ConfigureAwait(false);
+
+  /// <inheritdoc />
+  public async Task StartAsync(string clusterName, CancellationToken cancellationToken) =>
+    await KindCLI.Kind.StartClusterAsync(clusterName, cancellationToken).ConfigureAwait(false);
+
+  /// <inheritdoc />
+  public async Task StopAsync(string clusterName, CancellationToken cancellationToken) =>
+    await KindCLI.Kind.StopClusterAsync(clusterName, cancellationToken).ConfigureAwait(false);
 }

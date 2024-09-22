@@ -22,4 +22,12 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
   /// <inheritdoc />
   public async Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken) =>
     await K3dCLI.K3d.CreateClusterAsync(clusterName, configPath, cancellationToken).ConfigureAwait(false);
+
+  /// <inheritdoc />
+  public async Task StartAsync(string clusterName, CancellationToken cancellationToken) =>
+    await K3dCLI.K3d.StartClusterAsync(clusterName, cancellationToken).ConfigureAwait(false);
+
+  /// <inheritdoc />
+  public Task StopAsync(string clusterName, CancellationToken cancellationToken) =>
+    K3dCLI.K3d.StopClusterAsync(clusterName, cancellationToken);
 }
