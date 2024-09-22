@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Devantler.KindCLI" Version="0.0.3" />
+    <PackageReference Include="Docker.DotNet" Version="3.125.15" />
   </ItemGroup>
 
   <ItemGroup>
