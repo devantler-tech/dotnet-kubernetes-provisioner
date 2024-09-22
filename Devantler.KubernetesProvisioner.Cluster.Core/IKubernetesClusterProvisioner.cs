@@ -25,7 +25,7 @@ public interface IKubernetesClusterProvisioner
   /// </summary>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  Task ListAsync(CancellationToken cancellationToken);
+  Task<string[]> ListAsync(CancellationToken cancellationToken);
 
   /// <summary>
   /// Checks if a Kubernetes cluster exists.

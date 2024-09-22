@@ -16,7 +16,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
     await KindCLI.Kind.GetClusterAsync(clusterName, cancellationToken).ConfigureAwait(false);
 
   /// <inheritdoc />
-  public async Task ListAsync(CancellationToken cancellationToken) =>
+  public async Task<string[]> ListAsync(CancellationToken cancellationToken) =>
     await KindCLI.Kind.ListClustersAsync(cancellationToken).ConfigureAwait(false);
 
   /// <inheritdoc />

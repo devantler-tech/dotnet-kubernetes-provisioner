@@ -1,0 +1,53 @@
+namespace Devantler.KubernetesProvisioner.Cluster.K3d.Tests.K3dProvisionerTests;
+
+/// <summary>
+/// Tests for all methods in the <see cref="K3dProvisioner"/> class.
+/// </summary>
+public class AllMethodsTests
+{
+  readonly K3dProvisioner _k3dProvisioner = new();
+
+  /// <summary>
+  /// Test to verify that all methods in the <see cref="K3dProvisioner"/> class work as expected.
+  /// </summary>
+  /// <returns></returns>
+  [Fact]
+  public async Task AllMethods_WithValidParameters_Succeeds()
+  {
+    // Arrange
+    string clusterName = "test-cluster";
+    string configPath = Path.Combine(AppContext.BaseDirectory, "assets/k3d-config.yaml");
+
+    // Act
+    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.ProvisionAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
+    string[] clusters = await _k3dProvisioner.ListAsync(CancellationToken.None);
+    bool clusterExists = await _k3dProvisioner.ExistsAsync(clusterName, CancellationToken.None);
+
+    // Assert
+    Assert.Null(createClusterException);
+    string expectedClusterName = Assert.Single(clusters);
+    Assert.Equal(clusterName, expectedClusterName);
+    Assert.True(clusterExists);
+
+    // Cleanup
+    await _k3dProvisioner.DeprovisionAsync(clusterName, CancellationToken.None);
+  }
+
+  /// <summary>
+  /// Test to verify that all methods in the <see cref="K3dProvisioner"/> class fail as expected.
+  /// </summary>
+  /// <returns></returns>
+  [Fact]
+  public async Task WithInvalidParameters_Fails()
+  {
+    // Arrange
+    string clusterName = "test-cluster";
+    string configPath = Path.Combine(AppContext.BaseDirectory, "assets/invalid-config.yaml");
+
+    // Act
+    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.ProvisionAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
+
+    // Assert
+    Assert.NotNull(createClusterException);
+  }
+}
