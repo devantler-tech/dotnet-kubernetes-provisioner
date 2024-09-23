@@ -18,7 +18,7 @@ public class AllMethodsTests
   public async Task AllMethods_WithValidParameters_Succeeds()
   {
     // Arrange
-    string clusterName = "test-cluster";
+    string clusterName = "test-native-cluster";
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind-config.yaml");
 
     // Act
