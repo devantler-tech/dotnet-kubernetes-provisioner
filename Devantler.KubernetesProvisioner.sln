@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devantler.KubernetesProvisi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devantler.KubernetesProvisioner.Resource.Native", "Devantler.KubernetesProvisioner.Resource.Native\Devantler.KubernetesProvisioner.Resource.Native.csproj", "{C8BDA408-0E9E-480D-B243-618E0E0579AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devantler.KubernetesProvisioner.Resource.Native.Tests", "Devantler.KubernetesProvisioner.Resource.Native.Tests\Devantler.KubernetesProvisioner.Resource.Native.Tests.csproj", "{0F5FB874-6689-4466-914B-BBA2E9EB9C26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{C8BDA408-0E9E-480D-B243-618E0E0579AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8BDA408-0E9E-480D-B243-618E0E0579AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8BDA408-0E9E-480D-B243-618E0E0579AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F5FB874-6689-4466-914B-BBA2E9EB9C26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F5FB874-6689-4466-914B-BBA2E9EB9C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F5FB874-6689-4466-914B-BBA2E9EB9C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F5FB874-6689-4466-914B-BBA2E9EB9C26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
