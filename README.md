@@ -48,6 +48,9 @@ dotnet add package Devantler.KubernetesProvisioner.Cluster.K3d
 
 # For provisioning a Kind cluster
 dotnet add package Devantler.KubernetesProvisioner.Cluster.Kind
+
+# For provisioning native Kubernetes resources
+dotnet add package Devantler.KubernetesProvisioner.Resource.Native
 ```
 
 ## Usage
