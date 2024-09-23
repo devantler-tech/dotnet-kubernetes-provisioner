@@ -2,7 +2,7 @@ using Devantler.KubernetesProvisioner.Cluster.Kind;
 using k8s;
 using k8s.Models;
 
-namespace Devantler.KubernetesProvisioner.Resource.Native.Tests.KubernetesResourceProvisionerTests;
+namespace Devantler.KubernetesProvisioner.Resources.Native.Tests.KubernetesResourceProvisionerTests;
 
 /// <summary>
 /// Tests for all methods in the <see cref="KubernetesResourceProvisioner"/> class.

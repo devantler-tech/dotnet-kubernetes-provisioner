@@ -1,6 +1,6 @@
 using k8s;
 
-namespace Devantler.KubernetesProvisioner.Resource.Native;
+namespace Devantler.KubernetesProvisioner.Resources.Native;
 
 /// <summary>
 /// A class that provisions resources in a Kubernetes cluster.

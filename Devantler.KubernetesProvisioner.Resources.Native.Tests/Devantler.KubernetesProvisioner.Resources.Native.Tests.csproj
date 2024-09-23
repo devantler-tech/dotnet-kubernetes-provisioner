@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Resource.Native\Devantler.KubernetesProvisioner.Resource.Native.csproj" />
+    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Resources.Native\Devantler.KubernetesProvisioner.Resources.Native.csproj" />
     <ProjectReference Include="..\Devantler.KubernetesProvisioner.Cluster.Kind\Devantler.KubernetesProvisioner.Cluster.Kind.csproj" />
   </ItemGroup>
 

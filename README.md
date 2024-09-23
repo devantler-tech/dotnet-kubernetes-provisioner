@@ -23,8 +23,8 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
 ├── Devantler.KubernetesProvisioner.Cluster.Kind.Tests
 │   ├── KindProvisionerTests
 │   └── assets
-├── Devantler.KubernetesProvisioner.Resource.Native
-└── Devantler.KubernetesProvisioner.Resource.Native.Tests
+├── Devantler.KubernetesProvisioner.Resources.Native
+└── Devantler.KubernetesProvisioner.Resources.Native.Tests
     ├── KubernetesResourceProvisionerTests
     └── assets
 
@@ -50,7 +50,7 @@ dotnet add package Devantler.KubernetesProvisioner.Cluster.K3d
 dotnet add package Devantler.KubernetesProvisioner.Cluster.Kind
 
 # For provisioning native Kubernetes resources
-dotnet add package Devantler.KubernetesProvisioner.Resource.Native
+dotnet add package Devantler.KubernetesProvisioner.Resources.Native
 ```
 
 ## Usage
