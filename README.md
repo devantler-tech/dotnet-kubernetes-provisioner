@@ -20,11 +20,15 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
 │   ├── K3dProvisionerTests
 │   └── assets
 ├── Devantler.KubernetesProvisioner.Cluster.Kind
-└── Devantler.KubernetesProvisioner.Cluster.Kind.Tests
-    ├── KindProvisionerTests
+├── Devantler.KubernetesProvisioner.Cluster.Kind.Tests
+│   ├── KindProvisionerTests
+│   └── assets
+├── Devantler.KubernetesProvisioner.Resource.Native
+└── Devantler.KubernetesProvisioner.Resource.Native.Tests
+    ├── KubernetesResourceProvisionerTests
     └── assets
 
-11 directories
+15 directories
 ```
 <!-- readme-tree end -->
 
