@@ -44,7 +44,7 @@ public class AllMethodsTests
   public async Task WithInvalidParameters_Fails()
   {
     // Arrange
-    string clusterName = "test-cluster";
+    string clusterName = "test-kind-cluster";
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/invalid-config.yaml");
 
     // Act
