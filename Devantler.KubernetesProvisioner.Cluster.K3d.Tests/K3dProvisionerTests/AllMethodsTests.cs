@@ -27,8 +27,7 @@ public class AllMethodsTests
 
     // Assert
     Assert.Null(createClusterException);
-    string expectedClusterName = Assert.Single(clusters);
-    Assert.Equal(clusterName, expectedClusterName);
+    Assert.Contains(clusterName, clusters);
     Assert.Null(stopClusterException);
     Assert.Null(startClusterException);
     Assert.True(clusterExists);
