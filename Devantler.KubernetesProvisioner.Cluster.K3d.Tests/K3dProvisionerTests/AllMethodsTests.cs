@@ -27,8 +27,7 @@ public class AllMethodsTests
 
     // Assert
     Assert.Null(createClusterException);
-    string expectedClusterName = $"k3d-{clusterName}";
-    Assert.Contains(expectedClusterName, clusters);
+    Assert.Contains(clusterName, clusters);
     Assert.Null(stopClusterException);
     Assert.Null(startClusterException);
     Assert.True(clusterExists);
