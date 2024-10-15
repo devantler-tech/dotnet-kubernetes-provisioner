@@ -13,16 +13,17 @@ jobs:
   tree:
     runs-on: ubuntu-latest
     name: readme-tree
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Create README Tree
         uses: RavelloH/readme-tree@v1.1.0
         with:
           showdirectoryname: "yes"
-      - name: Commit README tree changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit_message: Commit README tree changes
-          push_options: '--force'
+          branch: update-readme-tree
+          commit-message: Update README Tree
+          title: Update README Tree
+          body: This PR includes new updates to the README Tree.
+          labels: chore
