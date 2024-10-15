@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using Devantler.KubernetesProvisioner.GitOps.Core;
+﻿using Devantler.KubernetesProvisioner.GitOps.Core;
 using Devantler.KubernetesProvisioner.Resources.Native;
 using k8s;
 using k8s.Models;
