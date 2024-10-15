@@ -16,7 +16,7 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
     await K3dCLI.K3d.GetClusterAsync(clusterName, cancellationToken).ConfigureAwait(false);
 
   /// <inheritdoc />
-  public async Task<string[]> ListAsync(CancellationToken cancellationToken) =>
+  public async Task<IEnumerable<string>> ListAsync(CancellationToken cancellationToken) =>
     await K3dCLI.K3d.ListClustersAsync(cancellationToken).ConfigureAwait(false);
 
   /// <inheritdoc />
