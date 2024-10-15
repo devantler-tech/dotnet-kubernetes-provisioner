@@ -10,7 +10,6 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
-
 ```
 .
 ├── .github
@@ -24,14 +23,18 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
 ├── Devantler.KubernetesProvisioner.Cluster.Kind.Tests
 │   ├── KindProvisionerTests
 │   └── assets
+├── Devantler.KubernetesProvisioner.GitOps.Core
+├── Devantler.KubernetesProvisioner.GitOps.Flux
+├── Devantler.KubernetesProvisioner.GitOps.Flux.Tests
+│   ├── FluxProvisionerTests
+│   └── assets
 ├── Devantler.KubernetesProvisioner.Resources.Native
 └── Devantler.KubernetesProvisioner.Resources.Native.Tests
     ├── KubernetesResourceProvisionerTests
     └── assets
 
-15 directories
+20 directories
 ```
-
 <!-- readme-tree end -->
 
 </details>
