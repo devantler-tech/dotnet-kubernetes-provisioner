@@ -34,8 +34,8 @@ public class FluxProvisioner(string? context = default) : IKubernetesGitOpsProvi
   public async Task ReconcileAsync(CancellationToken cancellationToken = default)
   {
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Context);
-    var kustomizations = await kubernetesResourceProvisioner.CustomObjects.ListNamespacedCustomObjectAsync<IEnumerable<V1CustomResourceDefinition>>("kustomize.toolkit.fluxcd.io", "v1", "flux-system", "kustomizations", cancellationToken: cancellationToken).ConfigureAwait(false);
-    foreach (var kustomization in kustomizations)
+    var kustomizations = await kubernetesResourceProvisioner.CustomObjects.ListNamespacedCustomObjectAsync<V1CustomResourceDefinitionList>("kustomize.toolkit.fluxcd.io", "v1", "flux-system", "kustomizations", cancellationToken: cancellationToken).ConfigureAwait(false);
+    foreach (var kustomization in kustomizations.Items)
     {
       await FluxCLI.Flux.ReconcileKustomizationAsync(kustomization.Metadata.Name, Context, withSource: true, cancellationToken: cancellationToken).ConfigureAwait(false);
     }

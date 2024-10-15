@@ -25,6 +25,8 @@ public class AllMethodsTests
     await Kind.DeleteClusterAsync(clusterName, cancellationToken);
     await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
     await fluxProvisioner.InstallAsync(cancellationToken);
+    await FluxCLI.Flux.CreateOCISourceAsync("podinfo", new Uri("oci://ghcr.io/stefanprodan/manifests/podinfo"), cancellationToken: cancellationToken);
+    await FluxCLI.Flux.CreateKustomizationAsync("podinfo", "OCIRepository/podinfo", "", cancellationToken: cancellationToken);
     await fluxProvisioner.ReconcileAsync(cancellationToken);
     await fluxProvisioner.UninstallAsync(cancellationToken);
 
