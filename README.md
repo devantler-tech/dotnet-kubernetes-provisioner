@@ -10,6 +10,7 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
+
 ```
 .
 ├── .github
@@ -30,6 +31,7 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
 
 15 directories
 ```
+
 <!-- readme-tree end -->
 
 </details>
@@ -48,6 +50,9 @@ dotnet add package Devantler.KubernetesProvisioner.Cluster.K3d
 
 # For provisioning a Kind cluster
 dotnet add package Devantler.KubernetesProvisioner.Cluster.Kind
+
+# For provisioning Flux GitOps tooling
+dotnet add package Devantler.KubernetesProvisioner.GitOps.Flux
 
 # For provisioning native Kubernetes resources
 dotnet add package Devantler.KubernetesProvisioner.Resources.Native
