@@ -18,12 +18,12 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   /// <inheritdoc />
   public async Task<bool> ExistsAsync(string clusterName, CancellationToken cancellationToken)
   {
-    string[] clusterNames = await ListAsync(cancellationToken).ConfigureAwait(false);
+    var clusterNames = await ListAsync(cancellationToken).ConfigureAwait(false);
     return clusterNames.Contains(clusterName);
   }
 
   /// <inheritdoc />
-  public async Task<string[]> ListAsync(CancellationToken cancellationToken) =>
+  public async Task<IEnumerable<string>> ListAsync(CancellationToken cancellationToken) =>
     await KindCLI.Kind.GetClustersAsync(cancellationToken).ConfigureAwait(false);
 
   /// <inheritdoc />
