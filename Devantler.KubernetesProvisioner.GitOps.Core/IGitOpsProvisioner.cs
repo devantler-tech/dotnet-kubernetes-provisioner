@@ -3,7 +3,7 @@
 /// <summary>
 /// A Kubernetes GitOps provisioner.
 /// </summary>
-public interface IKubernetesGitOpsProvisioner
+public interface IGitOpsProvisioner
 {
   /// <summary>
   /// The Kubernetes context.

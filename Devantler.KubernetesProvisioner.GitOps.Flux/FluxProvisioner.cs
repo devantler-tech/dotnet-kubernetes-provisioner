@@ -12,7 +12,7 @@ namespace Devantler.KubernetesProvisioner.GitOps.Flux;
 /// Initializes a new instance of the <see cref="FluxProvisioner"/> class.
 /// </remarks>
 /// <param name="context"></param>
-public class FluxProvisioner(string? context = default) : IKubernetesGitOpsProvisioner
+public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
 {
 
   /// <inheritdoc/>
