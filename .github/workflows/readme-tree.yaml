@@ -33,4 +33,8 @@ jobs:
           title: Update README Tree
           body: This PR includes new updates to the README Tree.
           labels: chore
+          delete-branch: true
+          reviewers: devantler
+          assignees: devantler
+          signoff: true
           token: ${{ steps.generate-token.outputs.token }}
