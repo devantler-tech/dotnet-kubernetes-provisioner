@@ -9,6 +9,18 @@ public interface IGitOpsProvisioner
   /// The Kubernetes context.
   /// </summary>
   public string? Context { get; set; }
+
+  /// <summary>
+  /// Push manifests to an OCI registry
+  /// </summary>
+  /// <param name="registryUri"></param>
+  /// <param name="manifestsDirectory"></param>
+  /// <param name="userName"></param>
+  /// <param name="password"></param>
+  /// <param name="cancellationToken"></param>
+  /// <returns></returns>
+  public Task PushManifestsAsync(Uri registryUri, string manifestsDirectory, string? userName = default, string? password = default, CancellationToken cancellationToken = default);
+
   /// <summary>
   /// Install the GitOps tooling on the Kubernetes cluster.
   /// </summary>
