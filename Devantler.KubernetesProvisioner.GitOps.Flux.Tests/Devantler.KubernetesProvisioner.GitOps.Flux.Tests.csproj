@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="0.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Devantler.KubernetesProvisioner.GitOps.Flux\Devantler.KubernetesProvisioner.GitOps.Flux.csproj" />
     <ProjectReference Include="..\Devantler.KubernetesProvisioner.Cluster.Kind\Devantler.KubernetesProvisioner.Cluster.Kind.csproj" />
   </ItemGroup>

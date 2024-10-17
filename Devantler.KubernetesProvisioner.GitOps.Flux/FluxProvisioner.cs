@@ -18,6 +18,10 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   /// <inheritdoc/>
   public string? Context { get; set; } = context;
 
+  /// <inheritdoc/>
+  public async Task PushManifestsAsync(Uri registryUri, string manifestsDirectory, string? userName = null, string? password = null, CancellationToken cancellationToken = default) =>
+    await FluxCLI.Flux.PushArtifactAsync(registryUri, manifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
+
   /// <summary>
   /// Install Flux on the Kubernetes cluster.
   /// </summary>
@@ -26,11 +30,7 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   public async Task InstallAsync(CancellationToken cancellationToken = default) =>
     await FluxCLI.Flux.InstallAsync(Context, cancellationToken).ConfigureAwait(false);
 
-  /// <summary>
-  /// Reconcile resources on the Kubernetes cluster.
-  /// </summary>
-  /// <param name="cancellationToken"></param>
-  /// <returns></returns>
+  /// <inheritdoc/>
   public async Task ReconcileAsync(CancellationToken cancellationToken = default)
   {
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Context);
