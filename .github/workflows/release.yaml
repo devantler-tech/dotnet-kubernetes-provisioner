@@ -6,7 +6,7 @@ on:
   issues:
     types: [closed]
   schedule:
-    - cron: '30 8 * * *'
+    - cron: '0 */3 * * *'
 jobs:
   release:
     runs-on: ubuntu-latest
