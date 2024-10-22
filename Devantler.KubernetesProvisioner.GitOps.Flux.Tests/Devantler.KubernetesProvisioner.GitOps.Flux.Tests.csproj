@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="0.0.2" />
+    <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="0.0.3" />
   </ItemGroup>
 
   <ItemGroup>
