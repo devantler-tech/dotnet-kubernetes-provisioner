@@ -22,9 +22,9 @@ public interface IGitOpsProvisioner
   public Task PushManifestsAsync(Uri registryUri, string manifestsDirectory, string? userName = default, string? password = default, CancellationToken cancellationToken = default);
 
   /// <summary>
-  /// Install the GitOps tooling on the Kubernetes cluster.
+  /// Bootstrap the GitOps tooling on the Kubernetes cluster.
   /// </summary>
-  public Task InstallAsync(CancellationToken cancellationToken = default);
+  public Task BootstrapAsync(Uri ociSourceUrl, string kustomizationDirectory, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Uninstall the GitOps tooling from the Kubernetes cluster.
