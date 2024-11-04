@@ -25,10 +25,18 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   /// <summary>
   /// Install Flux on the Kubernetes cluster.
   /// </summary>
+  /// <param name="ociSourceUrl"></param>
+  /// <param name="kustomizationDirectory"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public async Task InstallAsync(CancellationToken cancellationToken = default) =>
+  public async Task BootstrapAsync(Uri ociSourceUrl, string kustomizationDirectory, CancellationToken cancellationToken = default)
+  {
     await FluxCLI.Flux.InstallAsync(Context, cancellationToken).ConfigureAwait(false);
+    await FluxCLI.Flux.CreateOCISourceAsync("flux-system", ociSourceUrl, cancellationToken: cancellationToken)
+      .ConfigureAwait(false);
+    await FluxCLI.Flux.CreateKustomizationAsync("flux-system", "OCIRepository/flux-system", kustomizationDirectory,
+      cancellationToken: cancellationToken).ConfigureAwait(false);
+  }
 
   /// <inheritdoc/>
   public async Task ReconcileAsync(CancellationToken cancellationToken = default)
