@@ -12,26 +12,26 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   readonly DockerClient _dockerClient = new DockerClientConfiguration().CreateClient();
 
   /// <inheritdoc />
-  public async Task DeprovisionAsync(string clusterName, CancellationToken cancellationToken) =>
+  public async Task DeprovisionAsync(string clusterName, CancellationToken cancellationToken = default) =>
     await KindCLI.Kind.DeleteClusterAsync(clusterName, cancellationToken).ConfigureAwait(false);
 
   /// <inheritdoc />
-  public async Task<bool> ExistsAsync(string clusterName, CancellationToken cancellationToken)
+  public async Task<bool> ExistsAsync(string clusterName, CancellationToken cancellationToken = default)
   {
     var clusterNames = await ListAsync(cancellationToken).ConfigureAwait(false);
     return clusterNames.Contains(clusterName);
   }
 
   /// <inheritdoc />
-  public async Task<IEnumerable<string>> ListAsync(CancellationToken cancellationToken) =>
+  public async Task<IEnumerable<string>> ListAsync(CancellationToken cancellationToken = default) =>
     await KindCLI.Kind.GetClustersAsync(cancellationToken).ConfigureAwait(false);
 
   /// <inheritdoc />
-  public async Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken) =>
+  public async Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken = default) =>
     await KindCLI.Kind.CreateClusterAsync(clusterName, configPath, cancellationToken).ConfigureAwait(false);
 
   /// <inheritdoc />
-  public async Task StartAsync(string clusterName, CancellationToken cancellationToken)
+  public async Task StartAsync(string clusterName, CancellationToken cancellationToken = default)
   {
     foreach (var container in await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters(), cancellationToken).ConfigureAwait(false))
     {
@@ -45,7 +45,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   }
 
   /// <inheritdoc />
-  public async Task StopAsync(string clusterName, CancellationToken cancellationToken)
+  public async Task StopAsync(string clusterName, CancellationToken cancellationToken = default)
   {
     foreach (var container in await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters(), cancellationToken).ConfigureAwait(false))
     {
