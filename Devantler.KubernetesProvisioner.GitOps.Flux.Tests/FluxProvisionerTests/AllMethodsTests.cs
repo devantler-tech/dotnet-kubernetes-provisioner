@@ -27,7 +27,7 @@ public class AllMethodsTests
     // Act
     await Kind.DeleteClusterAsync(clusterName, cancellationToken);
     await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
-    await dockerProvisioner.CreateRegistryAsync("ksail-registry", 5555, cancellationToken);
+    await dockerProvisioner.CreateRegistryAsync("ksail-registry", 5555, cancellationToken: cancellationToken);
     await fluxProvisioner.InstallAsync(cancellationToken);
     string testFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
     await File.WriteAllTextAsync(testFile, "test");
