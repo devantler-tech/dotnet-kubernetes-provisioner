@@ -61,7 +61,7 @@ dotnet add package Devantler.KubernetesProvisioner.GitOps.Flux
 dotnet add package Devantler.KubernetesProvisioner.Resources.Native
 ```
 
-## Usage
+## 📝 Usage
 
 To use the provisioners, all you need to do is to create and use a new instance of the provisioner.
 
