@@ -6,7 +6,6 @@ namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests
 /// <summary>
 /// Tests for all methods in the <see cref="FluxProvisioner"/> class.
 /// </summary>
-[Collection("Flux")]
 public class AllMethodsTests
 {
   /// <summary>
@@ -27,16 +26,16 @@ public class AllMethodsTests
     var cancellationToken = new CancellationToken();
 
     // Act
-    await dockerProvisioner.CreateRegistryAsync("test-flux-registry", 6555, cancellationToken: cancellationToken);
+    await dockerProvisioner.CreateRegistryAsync("ksail-registry", 5555, cancellationToken: cancellationToken);
     await Kind.DeleteClusterAsync(clusterName, cancellationToken);
     await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
-    await fluxProvisioner.PushManifestsAsync(new Uri($"oci://localhost:6555/{clusterName}"), manifestsDirectoryPath, cancellationToken: cancellationToken);
-    await fluxProvisioner.BootstrapAsync(new Uri($"oci://host.docker.internal:6555/{clusterName}"), kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
+    await fluxProvisioner.PushManifestsAsync(new Uri($"oci://localhost:5555/{clusterName}"), manifestsDirectoryPath, cancellationToken: cancellationToken);
+    await fluxProvisioner.BootstrapAsync(new Uri($"oci://host.docker.internal:5555/{clusterName}"), kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
     await fluxProvisioner.ReconcileAsync(cancellationToken);
     await fluxProvisioner.UninstallAsync(cancellationToken);
 
     // Cleanup
     await Kind.DeleteClusterAsync(clusterName, cancellationToken);
-    await dockerProvisioner.DeleteRegistryAsync("test-flux-registry", cancellationToken);
+    await dockerProvisioner.DeleteRegistryAsync("ksail-registry", cancellationToken);
   }
 }
