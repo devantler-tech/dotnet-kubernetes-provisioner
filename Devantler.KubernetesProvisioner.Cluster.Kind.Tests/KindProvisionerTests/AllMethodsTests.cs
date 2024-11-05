@@ -3,6 +3,7 @@ namespace Devantler.KubernetesProvisioner.Cluster.Kind.Tests.KindProvisionerTest
 /// <summary>
 /// Tests for all methods in the <see cref="KindProvisioner"/> class.
 /// </summary>
+[Collection("Kind")]
 public class AllMethodsTests
 {
   readonly KindProvisioner _kindProvisioner = new();
