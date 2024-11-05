@@ -30,8 +30,6 @@ public class AllMethodsTests
     await Kind.DeleteClusterAsync(clusterName, cancellationToken);
     await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
     await dockerProvisioner.CreateRegistryAsync("ksail-registry", 5555, cancellationToken: cancellationToken);
-    // TODO: Ensure that the CreateRegistryAsync creates registries that are ready before proceeding.
-    await Task.Delay(5000, cancellationToken);
     await fluxProvisioner.PushManifestsAsync(new Uri($"oci://localhost:5555/{clusterName}"), manifestsDirectoryPath, cancellationToken: cancellationToken);
     await fluxProvisioner.BootstrapAsync(new Uri($"oci://host.docker.internal:5555/{clusterName}"), kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
     await fluxProvisioner.ReconcileAsync(cancellationToken);
