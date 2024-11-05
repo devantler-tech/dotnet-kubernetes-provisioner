@@ -28,12 +28,19 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
 ├── Devantler.KubernetesProvisioner.GitOps.Flux.Tests
 │   ├── FluxProvisionerTests
 │   └── assets
+│       └── k8s
+│           ├── apps
+│           ├── clusters
+│           │   └── test-flux-cluster
+│           │       └── flux-system
+│           └── infrastructure
+│               └── controllers
 ├── Devantler.KubernetesProvisioner.Resources.Native
 └── Devantler.KubernetesProvisioner.Resources.Native.Tests
     ├── KubernetesResourceProvisionerTests
     └── assets
 
-20 directories
+27 directories
 ```
 <!-- readme-tree end -->
 
