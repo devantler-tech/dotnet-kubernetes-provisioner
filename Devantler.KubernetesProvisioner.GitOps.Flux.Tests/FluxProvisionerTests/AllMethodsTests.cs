@@ -32,7 +32,7 @@ public class AllMethodsTests
     await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
     await fluxProvisioner.PushManifestsAsync(new Uri($"oci://localhost:5555/{clusterName}"), manifestsDirectoryPath, cancellationToken: cancellationToken);
     await fluxProvisioner.BootstrapAsync(new Uri($"oci://host.docker.internal:5555/{clusterName}"), kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
-    await fluxProvisioner.ReconcileAsync(cancellationToken);
+    await fluxProvisioner.ReconcileAsync(cancellationToken: cancellationToken);
     await fluxProvisioner.UninstallAsync(cancellationToken);
 
     // Cleanup

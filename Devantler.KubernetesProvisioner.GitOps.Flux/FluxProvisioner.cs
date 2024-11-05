@@ -39,13 +39,14 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   }
 
   /// <inheritdoc/>
-  public async Task ReconcileAsync(CancellationToken cancellationToken = default)
+  public async Task ReconcileAsync(string timeout = "5m", CancellationToken cancellationToken = default)
   {
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Context);
+    await FluxCLI.Flux.ReconcileOCISourceAsync("flux-system", Context, timeout: timeout, cancellationToken: cancellationToken).ConfigureAwait(false);
     var kustomizations = await kubernetesResourceProvisioner.CustomObjects.ListNamespacedCustomObjectAsync<V1CustomResourceDefinitionList>("kustomize.toolkit.fluxcd.io", "v1", "flux-system", "kustomizations", cancellationToken: cancellationToken).ConfigureAwait(false);
     foreach (var kustomization in kustomizations.Items)
     {
-      await FluxCLI.Flux.ReconcileKustomizationAsync(kustomization.Metadata.Name, Context, withSource: true, cancellationToken: cancellationToken).ConfigureAwait(false);
+      await FluxCLI.Flux.ReconcileKustomizationAsync(kustomization.Metadata.Name, Context, withSource: true, timeout: timeout, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
   }
 
