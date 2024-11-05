@@ -27,12 +27,13 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   /// </summary>
   /// <param name="ociSourceUrl"></param>
   /// <param name="kustomizationDirectory"></param>
+  /// <param name="insecure"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public async Task BootstrapAsync(Uri ociSourceUrl, string kustomizationDirectory, CancellationToken cancellationToken = default)
+  public async Task BootstrapAsync(Uri ociSourceUrl, string kustomizationDirectory, bool insecure = false, CancellationToken cancellationToken = default)
   {
     await FluxCLI.Flux.InstallAsync(Context, cancellationToken).ConfigureAwait(false);
-    await FluxCLI.Flux.CreateOCISourceAsync("flux-system", ociSourceUrl, true, cancellationToken: cancellationToken)
+    await FluxCLI.Flux.CreateOCISourceAsync("flux-system", ociSourceUrl, insecure, cancellationToken: cancellationToken)
       .ConfigureAwait(false);
     await FluxCLI.Flux.CreateKustomizationAsync("flux-system", "OCIRepository/flux-system", kustomizationDirectory, wait: false,
       cancellationToken: cancellationToken).ConfigureAwait(false);

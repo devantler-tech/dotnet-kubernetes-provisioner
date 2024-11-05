@@ -28,7 +28,7 @@ public class AllMethodsTests
     await Kind.DeleteClusterAsync(clusterName, cancellationToken);
     await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
     await dockerProvisioner.CreateRegistryAsync("ksail-registry", 5555, cancellationToken: cancellationToken);
-    await fluxProvisioner.BootstrapAsync(new Uri("oci://ghcr.io/stefanprodan/manifests/podinfo"), "", cancellationToken);
+    await fluxProvisioner.BootstrapAsync(new Uri("oci://ghcr.io/stefanprodan/manifests/podinfo"), "", cancellationToken: cancellationToken);
     string testFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
     await File.WriteAllTextAsync(testFile, "test");
     await fluxProvisioner.PushManifestsAsync(new Uri("oci://localhost:5555/test-manifest"), testFile, cancellationToken: cancellationToken);
