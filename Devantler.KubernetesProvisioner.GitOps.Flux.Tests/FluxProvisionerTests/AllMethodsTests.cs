@@ -6,6 +6,7 @@ namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests
 /// <summary>
 /// Tests for all methods in the <see cref="FluxProvisioner"/> class.
 /// </summary>
+[Collection("Flux")]
 public class AllMethodsTests
 {
   /// <summary>

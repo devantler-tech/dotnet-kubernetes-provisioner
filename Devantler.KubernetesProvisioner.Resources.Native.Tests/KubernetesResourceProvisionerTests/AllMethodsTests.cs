@@ -7,6 +7,7 @@ namespace Devantler.KubernetesProvisioner.Resources.Native.Tests.KubernetesResou
 /// <summary>
 /// Tests for all methods in the <see cref="KubernetesResourceProvisioner"/> class.
 /// </summary>
+[Collection("Native")]
 public class AllMethodsTests
 {
   readonly KindProvisioner _kindProvisioner = new();

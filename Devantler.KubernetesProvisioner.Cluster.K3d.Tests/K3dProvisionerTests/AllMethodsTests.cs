@@ -3,6 +3,7 @@ namespace Devantler.KubernetesProvisioner.Cluster.K3d.Tests.K3dProvisionerTests;
 /// <summary>
 /// Tests for all methods in the <see cref="K3dProvisioner"/> class.
 /// </summary>
+[Collection("K3d")]
 public class AllMethodsTests
 {
   readonly K3dProvisioner _k3dProvisioner = new();
