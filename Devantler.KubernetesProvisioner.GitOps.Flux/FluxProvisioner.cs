@@ -14,7 +14,6 @@ namespace Devantler.KubernetesProvisioner.GitOps.Flux;
 /// <param name="context"></param>
 public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
 {
-
   /// <inheritdoc/>
   public string? Context { get; set; } = context;
 
