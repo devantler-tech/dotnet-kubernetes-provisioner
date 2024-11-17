@@ -1,7 +1,5 @@
 using Devantler.KindCLI;
 using Devantler.ContainerEngineProvisioner.Docker;
-using CliWrap;
-using CliWrap.Buffered;
 using System.Runtime.InteropServices;
 
 namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests;
