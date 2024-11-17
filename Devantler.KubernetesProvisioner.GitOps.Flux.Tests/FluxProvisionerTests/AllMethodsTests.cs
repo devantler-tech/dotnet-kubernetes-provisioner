@@ -38,10 +38,7 @@ public class AllMethodsTests
     // Fix for Linux, that doesn't support host.docker.internal
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
     {
-      var cmd = Cli.Wrap("ip").WithArguments("addr show docker0");
-      var result = await cmd.ExecuteBufferedAsync(cancellationToken);
-      string docker0Ip = result.StandardOutput;
-      ociUri = new Uri($"oci://{docker0Ip}:5555/{clusterName}");
+      ociUri = new Uri($"oci://172.17.0.1:5555/{clusterName}");
     }
 
     await fluxProvisioner.BootstrapAsync(ociUri, kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
