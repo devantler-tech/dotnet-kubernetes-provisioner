@@ -1,5 +1,6 @@
 using Devantler.KindCLI;
 using Devantler.ContainerEngineProvisioner.Docker;
+using System.Runtime.InteropServices;
 
 namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests;
 
@@ -31,7 +32,14 @@ public class AllMethodsTests
     await Kind.DeleteClusterAsync(clusterName, cancellationToken);
     await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
     await fluxProvisioner.PushManifestsAsync(new Uri($"oci://localhost:5555/{clusterName}"), manifestsDirectoryPath, cancellationToken: cancellationToken);
-    await fluxProvisioner.BootstrapAsync(new Uri($"oci://host.docker.internal:5555/{clusterName}"), kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
+    var ociUri = new Uri($"oci://host.docker.internal:5555/{clusterName}");
+    // Fix for Kind on Linux, that doesn't support host.docker.internal via --add-host
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+    {
+      ociUri = new Uri($"oci://172.17.0.1:5555/{clusterName}");
+    }
+
+    await fluxProvisioner.BootstrapAsync(ociUri, kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
     await fluxProvisioner.ReconcileAsync(cancellationToken: cancellationToken);
     await fluxProvisioner.UninstallAsync(cancellationToken);
 
