@@ -29,9 +29,7 @@ jobs:
           dotnet-version: 9
       - name: 🧪 Test
         run: |
-          for project in $(find . -name '*.csproj'); do
-            dotnet test "$project" --collect:"XPlat Code Coverage"
-          done
+          dotnet test --collect:"XPlat Code Coverage"
       - name: 📄 Get Coverage Files
         id: get_coverage_files
         if: matrix.os != 'windows-latest'
