@@ -1,5 +1,8 @@
 using Devantler.KindCLI;
 using Devantler.ContainerEngineProvisioner.Docker;
+using CliWrap;
+using CliWrap.Buffered;
+using System.Runtime.InteropServices;
 
 namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests;
 
@@ -31,7 +34,17 @@ public class AllMethodsTests
     await Kind.DeleteClusterAsync(clusterName, cancellationToken);
     await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
     await fluxProvisioner.PushManifestsAsync(new Uri($"oci://localhost:5555/{clusterName}"), manifestsDirectoryPath, cancellationToken: cancellationToken);
-    await fluxProvisioner.BootstrapAsync(new Uri($"oci://host.docker.internal:5555/{clusterName}"), kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
+    var ociUri = new Uri($"oci://host.docker.internal:5555/{clusterName}");
+    // Fix for Linux, that doesn't support host.docker.internal
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+    {
+      var cmd = Cli.Wrap("ip").WithArguments("addr show docker0");
+      var result = await cmd.ExecuteBufferedAsync(cancellationToken);
+      string docker0Ip = result.StandardOutput;
+      ociUri = new Uri($"oci://{docker0Ip}:5555/{clusterName}");
+    }
+
+    await fluxProvisioner.BootstrapAsync(ociUri, kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
     await fluxProvisioner.ReconcileAsync(cancellationToken: cancellationToken);
     await fluxProvisioner.UninstallAsync(cancellationToken);
 
