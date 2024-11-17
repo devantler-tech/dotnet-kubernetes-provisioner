@@ -43,7 +43,7 @@ jobs:
           $coverage_files = $coverage_files -join ','
           echo "COVERAGE_FILES=$coverage_files" >> "$GITHUB_OUTPUT"
       - name: 📄 Upload Code Coverage to CodeCov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ${{ steps.get_coverage_files.outputs.COVERAGE_FILES }}
           fail_ci_if_error: true
