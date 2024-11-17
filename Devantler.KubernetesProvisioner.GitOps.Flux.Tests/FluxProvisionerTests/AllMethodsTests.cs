@@ -35,7 +35,7 @@ public class AllMethodsTests
     await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
     await fluxProvisioner.PushManifestsAsync(new Uri($"oci://localhost:5555/{clusterName}"), manifestsDirectoryPath, cancellationToken: cancellationToken);
     var ociUri = new Uri($"oci://host.docker.internal:5555/{clusterName}");
-    // Fix for Linux, that doesn't support host.docker.internal
+    // Fix for Kind on Linux, that doesn't support host.docker.internal via --add-host
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
     {
       ociUri = new Uri($"oci://172.17.0.1:5555/{clusterName}");
