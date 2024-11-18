@@ -33,13 +33,20 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   /// <inheritdoc />
   public async Task StartAsync(string clusterName, CancellationToken cancellationToken = default)
   {
-    foreach (var container in await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters(), cancellationToken).ConfigureAwait(false))
+    var containersListParameters = new ContainersListParameters
     {
-      if (container.Names.Any(name => name.StartsWith($"/{clusterName}-", StringComparison.Ordinal)))
+      All = true
+    };
+    var containers = await _dockerClient.Containers.ListContainersAsync(containersListParameters, cancellationToken).ConfigureAwait(false);
+    foreach (var container in containers)
+    {
+      if (container.Names.Any(name => name.StartsWith($"/{clusterName}", StringComparison.OrdinalIgnoreCase)))
       {
-        _ = await _dockerClient.Containers
-          .StartContainerAsync(container.ID, new ContainerStartParameters(), cancellationToken)
-          .ConfigureAwait(false);
+        _ = await _dockerClient.Containers.StartContainerAsync(
+          container.ID,
+          new ContainerStartParameters(),
+          cancellationToken
+        );
       }
     }
   }
@@ -49,7 +56,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   {
     foreach (var container in await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters(), cancellationToken).ConfigureAwait(false))
     {
-      if (container.Names.Any(name => name.StartsWith($"/{clusterName}-", StringComparison.Ordinal)))
+      if (container.Names.Any(name => name.StartsWith($"/{clusterName}", StringComparison.Ordinal)))
       {
         _ = await _dockerClient.Containers
           .StopContainerAsync(container.ID, new ContainerStopParameters(), cancellationToken)
