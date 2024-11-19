@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Devantler.FluxCLI" Version="0.0.18" />
+    <PackageReference Include="Devantler.FluxCLI" Version="0.0.19" />
   </ItemGroup>
 
   <ItemGroup>
