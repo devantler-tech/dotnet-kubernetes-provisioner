@@ -1,15 +1,18 @@
 ﻿using Devantler.KubernetesProvisioner.Cluster.Core;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using k8s;
+using k8s.Exceptions;
 
 namespace Devantler.KubernetesProvisioner.Cluster.Kind;
 
 /// <summary>
 /// A Kubernetes cluster provisioner for Kind.
 /// </summary>
-public class KindProvisioner : IKubernetesClusterProvisioner
+public class KindProvisioner(string? context) : IKubernetesClusterProvisioner
 {
   readonly DockerClient _dockerClient = new DockerClientConfiguration().CreateClient();
+  readonly Kubernetes _kubernetesClient = new(KubernetesClientConfiguration.BuildConfigFromConfigObject(KubernetesClientConfiguration.LoadKubeConfig(), context));
 
   /// <inheritdoc />
   public async Task DeprovisionAsync(string clusterName, CancellationToken cancellationToken = default) =>
@@ -49,7 +52,18 @@ public class KindProvisioner : IKubernetesClusterProvisioner
         );
       }
     }
-    await Task.Delay(5000, cancellationToken);
+    while (true)
+    {
+      try
+      {
+        _ = await _kubernetesClient.ListNamespaceAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+        break;
+      }
+      catch (KubeConfigException)
+      {
+        await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+      }
+    }
   }
 
   /// <inheritdoc />
