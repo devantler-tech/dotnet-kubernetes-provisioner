@@ -49,7 +49,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
         );
       }
     }
-    //await Task.Delay(5000, cancellationToken);
+    await Task.Delay(5000, cancellationToken);
   }
 
   /// <inheritdoc />
