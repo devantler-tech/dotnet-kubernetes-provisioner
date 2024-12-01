@@ -51,15 +51,22 @@ public class KindProvisioner : IKubernetesClusterProvisioner
         );
       }
     }
-    using var kubernetesClient = new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigObject(KubernetesClientConfiguration.LoadKubeConfig(), clusterName));
+    using var kubernetesClient = new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigObject(KubernetesClientConfiguration.LoadKubeConfig(), "kind-" + clusterName));
     while (true)
     {
       try
       {
-        _ = await kubernetesClient.ListNamespaceAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-        break;
+        var namespaceList = await kubernetesClient.ListNamespaceAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+        if (namespaceList.Items.Any())
+        {
+          break;
+        }
       }
       catch (KubeConfigException)
+      {
+        await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+      }
+      catch (HttpRequestException)
       {
         await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
       }
