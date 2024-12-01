@@ -9,10 +9,9 @@ namespace Devantler.KubernetesProvisioner.Cluster.Kind;
 /// <summary>
 /// A Kubernetes cluster provisioner for Kind.
 /// </summary>
-public class KindProvisioner(string? context) : IKubernetesClusterProvisioner
+public class KindProvisioner : IKubernetesClusterProvisioner
 {
   readonly DockerClient _dockerClient = new DockerClientConfiguration().CreateClient();
-  readonly Kubernetes _kubernetesClient = new(KubernetesClientConfiguration.BuildConfigFromConfigObject(KubernetesClientConfiguration.LoadKubeConfig(), context));
 
   /// <inheritdoc />
   public async Task DeprovisionAsync(string clusterName, CancellationToken cancellationToken = default) =>
@@ -52,11 +51,12 @@ public class KindProvisioner(string? context) : IKubernetesClusterProvisioner
         );
       }
     }
+    using var kubernetesClient = new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigObject(KubernetesClientConfiguration.LoadKubeConfig(), clusterName));
     while (true)
     {
       try
       {
-        _ = await _kubernetesClient.ListNamespaceAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+        _ = await kubernetesClient.ListNamespaceAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
         break;
       }
       catch (KubeConfigException)
