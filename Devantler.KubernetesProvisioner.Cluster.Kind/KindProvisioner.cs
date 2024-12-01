@@ -1,6 +1,8 @@
 ﻿using Devantler.KubernetesProvisioner.Cluster.Core;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using k8s;
+using k8s.Autorest;
 
 namespace Devantler.KubernetesProvisioner.Cluster.Kind;
 
@@ -49,7 +51,26 @@ public class KindProvisioner : IKubernetesClusterProvisioner
         );
       }
     }
-    await Task.Delay(5000, cancellationToken);
+    using var kubernetesClient = new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigObject(KubernetesClientConfiguration.LoadKubeConfig(), "kind-" + clusterName));
+    while (true)
+    {
+      try
+      {
+        var namespaceList = await kubernetesClient.ListNamespaceAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+        if (namespaceList.Items.Any())
+        {
+          break;
+        }
+      }
+      catch (HttpRequestException)
+      {
+        await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+      }
+      catch (HttpOperationException)
+      {
+        await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+      }
+    }
   }
 
   /// <inheritdoc />

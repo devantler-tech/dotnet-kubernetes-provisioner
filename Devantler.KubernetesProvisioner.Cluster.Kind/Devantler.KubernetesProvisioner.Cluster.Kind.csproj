@@ -14,6 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Devantler.KindCLI" Version="1.0.1" />
     <PackageReference Include="Docker.DotNet" Version="3.125.15" />
+    <PackageReference Include="KubernetesClient" Version="15.0.1" />
   </ItemGroup>
 
   <ItemGroup>
