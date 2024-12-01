@@ -3,7 +3,6 @@ using Docker.DotNet;
 using Docker.DotNet.Models;
 using k8s;
 using k8s.Autorest;
-using k8s.Exceptions;
 
 namespace Devantler.KubernetesProvisioner.Cluster.Kind;
 
