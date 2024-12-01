@@ -63,10 +63,6 @@ public class KindProvisioner : IKubernetesClusterProvisioner
           break;
         }
       }
-      catch (KubeConfigException)
-      {
-        await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-      }
       catch (HttpRequestException)
       {
         await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
