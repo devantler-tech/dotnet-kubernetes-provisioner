@@ -34,5 +34,5 @@ public interface IGitOpsProvisioner
   /// <summary>
   /// Reconcile resources on the Kubernetes cluster.
   /// </summary>
-  public Task ReconcileAsync(string timeout = "5m", CancellationToken cancellationToken = default);
+  public Task ReconcileAsync(string[] kustomizeFlow, string timeout = "5m", CancellationToken cancellationToken = default);
 }
