@@ -2,6 +2,7 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using k8s;
+using k8s.Autorest;
 using k8s.Exceptions;
 
 namespace Devantler.KubernetesProvisioner.Cluster.Kind;
@@ -67,6 +68,10 @@ public class KindProvisioner : IKubernetesClusterProvisioner
         await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
       }
       catch (HttpRequestException)
+      {
+        await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+      }
+      catch (HttpOperationException)
       {
         await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
       }
