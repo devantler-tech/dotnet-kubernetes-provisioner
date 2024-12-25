@@ -15,7 +15,7 @@ jobs:
       contents: read
     steps:
       - name: Github Action Notify Release
-        uses: nearform-actions/github-action-notify-release@v1.12.1
+        uses: nearform-actions/github-action-notify-release@v1.12.2
         with:
           notify-after: 1m
 
