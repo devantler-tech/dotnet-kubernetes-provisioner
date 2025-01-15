@@ -48,6 +48,7 @@ jobs:
           committer: ${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
           sign-commits: true
       - name: Enable Pull Request Automerge
+        if: steps.create-pull-request.outputs.pull-request-operation != 'none'
         run: gh pr merge --merge --auto ${{ steps.create-pull-request.outputs.pull-request-number }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
