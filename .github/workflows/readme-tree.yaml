@@ -20,11 +20,16 @@ jobs:
         with:
           showdirectoryname: "yes"
       - name: Generate GitHub App Token
-        uses: tibdex/github-app-token@v2
-        id: generate-token
+        uses: actions/create-github-app-token@v1
+        id: app-token
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
@@ -37,4 +42,8 @@ jobs:
           reviewers: devantler
           assignees: devantler
           signoff: true
-          token: ${{ steps.generate-token.outputs.token }}
+          token: ${{ steps.app-token.outputs.token }}
+          author: ${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
+          committer: ${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
+          sign-commits: true
+
