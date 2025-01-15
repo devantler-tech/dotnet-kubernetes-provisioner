@@ -31,6 +31,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Create Pull Request
+        id: create-pull-request
         uses: peter-evans/create-pull-request@v7
         with:
           branch: update-readme-tree
@@ -47,7 +48,7 @@ jobs:
           committer: ${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
           sign-commits: true
       - name: Enable Pull Request Automerge
-        run: gh pr merge --merge --auto "1"
+        run: gh pr merge --merge --auto ${{ steps.create-pull-request.outputs.pull-request-number }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
