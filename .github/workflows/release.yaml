@@ -13,26 +13,8 @@ jobs:
     permissions:
       issues: write
       contents: read
-    env:
-      ISSUE_EXISTS: false
     steps:
-      - name: Check if Issue Already Exists
-        id: ISSUE_EXISTS
-        run: |
-          EXISTS=$(curl -L \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${{ github.repository }}/issues?state=open" | jq '.[] | select(.title == "Release pending!")')
-          if [ -z "$EXISTS" ]; then
-            echo "ISSUE_EXISTS=false" >> $GITHUB_ENV
-          else
-            echo "ISSUE_EXISTS=true" >> $GITHUB_ENV
-          fi
       - name: Github Action Notify Release
-        if: env.ISSUE_EXISTS == false
         uses: nearform-actions/github-action-notify-release@v1.12.2
         with:
           notify-after: 1m
-
-
