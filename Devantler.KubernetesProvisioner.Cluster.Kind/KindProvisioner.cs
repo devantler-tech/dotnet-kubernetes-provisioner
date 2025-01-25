@@ -1,4 +1,5 @@
-﻿using Devantler.KubernetesProvisioner.Cluster.Core;
+﻿using Devantler.KindCLI;
+using Devantler.KubernetesProvisioner.Cluster.Core;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using k8s;
@@ -14,8 +15,20 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   readonly DockerClient _dockerClient = new DockerClientConfiguration().CreateClient();
 
   /// <inheritdoc />
-  public async Task DeprovisionAsync(string clusterName, CancellationToken cancellationToken = default) =>
-    await KindCLI.Kind.DeleteClusterAsync(clusterName, cancellationToken).ConfigureAwait(false);
+  public async Task DeleteAsync(string clusterName, CancellationToken cancellationToken = default)
+  {
+    var args = new List<string>
+    {
+      "delete",
+      "cluster",
+      "--name", clusterName
+    };
+    var (exitCode, _) = await KindCLI.Kind.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    if (exitCode != 0)
+    {
+      throw new KindException("Failed to delete Kind cluster.");
+    }
+  }
 
   /// <inheritdoc />
   public async Task<bool> ExistsAsync(string clusterName, CancellationToken cancellationToken = default)
@@ -25,12 +38,34 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   }
 
   /// <inheritdoc />
-  public async Task<IEnumerable<string>> ListAsync(CancellationToken cancellationToken = default) =>
-    await KindCLI.Kind.GetClustersAsync(cancellationToken).ConfigureAwait(false);
+  public async Task<IEnumerable<string>> ListAsync(CancellationToken cancellationToken = default)
+  {
+    var args = new List<string> { "get", "clusters" };
+    var (exitCode, result) = await KindCLI.Kind.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    if (exitCode != 0)
+    {
+      throw new KindException("Failed to list Kind clusters.");
+    }
+    string[] clusterNames = result.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+    return clusterNames;
+  }
 
   /// <inheritdoc />
-  public async Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken = default) =>
-    await KindCLI.Kind.CreateClusterAsync(clusterName, configPath, cancellationToken).ConfigureAwait(false);
+  public async Task CreateAsync(string clusterName, string configPath, CancellationToken cancellationToken = default)
+  {
+    var args = new List<string>
+    {
+      "create",
+      "cluster",
+      "--name", clusterName,
+      "--config", configPath
+    };
+    var (exitCode, _) = await KindCLI.Kind.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    if (exitCode != 0)
+    {
+      throw new KindException("Failed to create Kind cluster.");
+    }
+  }
 
   /// <inheritdoc />
   public async Task StartAsync(string clusterName, CancellationToken cancellationToken = default)

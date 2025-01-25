@@ -19,7 +19,7 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind-config.yaml");
 
     // Act
-    var createClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.ProvisionAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
+    var createClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
     var clusters = await _kindProvisioner.ListAsync(CancellationToken.None);
     var stopClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.StopAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
     var startClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.StartAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
@@ -33,7 +33,7 @@ public class AllMethodsTests
     Assert.True(clusterExists);
 
     // Cleanup
-    await _kindProvisioner.DeprovisionAsync(clusterName, CancellationToken.None);
+    await _kindProvisioner.DeleteAsync(clusterName, CancellationToken.None);
   }
 
   /// <summary>
@@ -48,7 +48,7 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/invalid-config.yaml");
 
     // Act
-    var createClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.ProvisionAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
+    var createClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
 
     // Assert
     Assert.NotNull(createClusterException);
