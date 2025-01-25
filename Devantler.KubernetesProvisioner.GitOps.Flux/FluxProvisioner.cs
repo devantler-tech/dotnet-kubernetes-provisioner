@@ -44,7 +44,7 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Context);
     await FluxCLI.Flux.ReconcileOCISourceAsync("flux-system", Context, timeout: timeout, cancellationToken: cancellationToken).ConfigureAwait(false);
     var kustomizations = await kubernetesResourceProvisioner.CustomObjects.ListNamespacedCustomObjectAsync<V1CustomResourceDefinitionList>("kustomize.toolkit.fluxcd.io", "v1", "flux-system", "kustomizations", cancellationToken: cancellationToken).ConfigureAwait(false);
-    kustomizeFlow = kustomizeFlow.Select(k => k.Replace("/", "-", StringComparison.Ordinal)).ToArray();
+    kustomizeFlow = [.. kustomizeFlow.Select(k => k.Replace("/", "-", StringComparison.Ordinal))];
     kustomizations.Items = [.. kustomizations.Items.OrderBy(k => Array.IndexOf(kustomizeFlow, k.Metadata.Name))];
     foreach (var kustomization in kustomizations.Items)
     {
