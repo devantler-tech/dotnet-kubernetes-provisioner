@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Devantler.Commons.Extensions" Version="0.3.*" />
   </ItemGroup>
 
 </Project>

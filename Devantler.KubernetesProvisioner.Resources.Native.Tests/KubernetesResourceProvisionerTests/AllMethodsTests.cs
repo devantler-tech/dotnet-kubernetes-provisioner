@@ -25,7 +25,7 @@ public class AllMethodsTests
     // Act
     var createClusterException = await Record.ExceptionAsync(async () =>
     {
-      await _kindProvisioner.ProvisionAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false);
+      await _kindProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false);
     });
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner($"kind-{clusterName}");
     var @namespace = new V1Namespace
@@ -43,6 +43,6 @@ public class AllMethodsTests
     Assert.Null(createdNamespaceException);
 
     // Cleanup
-    await _kindProvisioner.DeprovisionAsync(clusterName, CancellationToken.None);
+    await _kindProvisioner.DeleteAsync(clusterName, CancellationToken.None);
   }
 }

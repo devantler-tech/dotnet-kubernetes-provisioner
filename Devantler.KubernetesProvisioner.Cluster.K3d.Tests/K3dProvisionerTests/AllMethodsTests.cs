@@ -20,7 +20,7 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/k3d-config.yaml");
 
     // Act
-    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.ProvisionAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
+    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
     var clusters = await _k3dProvisioner.ListAsync(CancellationToken.None);
     var stopClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.StopAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
     var startClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.StartAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
@@ -34,7 +34,7 @@ public class AllMethodsTests
     Assert.True(clusterExists);
 
     // Cleanup
-    await _k3dProvisioner.DeprovisionAsync(clusterName, CancellationToken.None);
+    await _k3dProvisioner.DeleteAsync(clusterName, CancellationToken.None);
   }
 
   /// <summary>
@@ -49,7 +49,7 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/invalid-config.yaml");
 
     // Act
-    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.ProvisionAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
+    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
 
     // Assert
     Assert.NotNull(createClusterException);

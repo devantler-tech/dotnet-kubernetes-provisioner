@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Devantler.Commons.Extensions;
 using Devantler.FluxCLI;
 using Devantler.KubernetesProvisioner.GitOps.Core;
 using Devantler.KubernetesProvisioner.Resources.Native;
@@ -27,6 +28,7 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
     string revision = currentTimeEpoch.ToString(CultureInfo.InvariantCulture);
 
     await PushArtifactAsync(registryUri, manifestsDirectory, revision, cancellationToken);
+    await TagArtifactAsync(registryUri, revision, cancellationToken);
   }
 
   /// <summary>
@@ -75,7 +77,7 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   public async Task UninstallAsync(CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "uninstall", "--silent" };
-    args.AddIfNotNull("--context", Context);
+    args.AddIfNotNull("--context={0}", Context);
     var (exitCode, output) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0 || output.Contains("connection refused", StringComparison.OrdinalIgnoreCase))
     {
@@ -94,7 +96,6 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   /// <exception cref="FluxException"></exception>
   public static async Task PushArtifactAsync(Uri registryUri, string manifestsDirectory, string revision, CancellationToken cancellationToken)
   {
-    // Push artifact
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
       "push",
       "artifact",
@@ -108,9 +109,19 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
     {
       throw new FluxException($"Failed to push artifact");
     }
+  }
 
-    // Tag artifact
-    (exitCode, _) = await FluxCLI.Flux.RunAsync([
+  /// <summary>
+  /// Tag an artifact.
+  /// </summary>
+  /// <param name="registryUri"></param>
+  /// <param name="revision"></param>
+  /// <param name="cancellationToken"></param>
+  /// <returns></returns>
+  /// <exception cref="FluxException"></exception>
+  public static async Task TagArtifactAsync(Uri registryUri, string revision, CancellationToken cancellationToken)
+  {
+    var (exitCode, _) = await FluxCLI.Flux.RunAsync([
         "tag",
         "artifact",
         $"{registryUri}:{revision}",
@@ -132,7 +143,7 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   public async Task InstallAsync(CancellationToken cancellationToken)
   {
     var args = new List<string> { "install", };
-    args.AddIfNotNull("--context", Context);
+    args.AddIfNotNull("--context={0}", Context);
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
@@ -169,7 +180,7 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
       "--interval", interval,
       "--namespace", @namespace
     };
-    args.AddIfNotNull("--context", Context);
+    args.AddIfNotNull("--context={0}", Context);
 
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken);
     if (exitCode != 0)
@@ -186,8 +197,24 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   /// <returns></returns>
   public async Task CreateKustomizationAsync(string kustomizationDirectory, CancellationToken cancellationToken)
   {
-    await FluxCLI.Flux.CreateKustomizationAsync("flux-system", "OCIRepository/flux-system", kustomizationDirectory, Context, wait: false,
-      cancellationToken: cancellationToken).ConfigureAwait(false);
+    var args = new List<string>
+    {
+      "create",
+      "kustomization",
+      "flux-system",
+      "--source", "OCIRepository/flux-system",
+      "--path", kustomizationDirectory,
+      "--namespace", "flux-system",
+      "--interval", "5m",
+      "--prune",
+      "--wait"
+    };
+    args.AddIfNotNull("--context={0}", Context);
+    var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    if (exitCode != 0)
+    {
+      throw new FluxException($"Failed to create Kustomization");
+    }
   }
 
   /// <summary>
@@ -202,8 +229,8 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
   public async Task ReconcileOCISourceAsync(string name = "flux-system", string @namespace = "flux-system", string timeout = "5m", CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "reconcile", "source", "oci", name, "--namespace", @namespace, "--timeout", timeout };
-    args.AddIfNotNull("--context", Context);
-    var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false) :
+    args.AddIfNotNull("--context={0}", Context);
+    var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
       throw new FluxException($"Failed to reconcile OCI source");

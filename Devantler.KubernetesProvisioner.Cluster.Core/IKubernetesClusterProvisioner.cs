@@ -6,19 +6,19 @@
 public interface IKubernetesClusterProvisioner
 {
   /// <summary>
-  /// Provisions a Kubernetes cluster.
+  /// Creates a Kubernetes cluster.
   /// </summary>
   /// <param name="clusterName"></param>
   /// <param name="configPath"></param>
   /// <param name="cancellationToken"></param>
-  Task ProvisionAsync(string clusterName, string configPath, CancellationToken cancellationToken = default);
+  Task CreateAsync(string clusterName, string configPath, CancellationToken cancellationToken = default);
 
   /// <summary>
-  /// Deprovisions a Kubernetes cluster.
+  /// Deletes a Kubernetes cluster.
   /// </summary>
   /// <param name="clusterName"></param>
   /// <param name="cancellationToken"></param>
-  Task DeprovisionAsync(string clusterName, CancellationToken cancellationToken = default);
+  Task DeleteAsync(string clusterName, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Starts a Kubernetes cluster.

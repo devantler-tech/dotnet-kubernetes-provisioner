@@ -1,6 +1,6 @@
-using Devantler.KindCLI;
 using Devantler.ContainerEngineProvisioner.Docker;
 using System.Runtime.InteropServices;
+using Devantler.KubernetesProvisioner.Cluster.Kind;
 
 namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests;
 
@@ -10,6 +10,7 @@ namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests
 [Collection("Flux")]
 public class AllMethodsTests
 {
+  readonly KindProvisioner _kindProvisioner = new();
   /// <summary>
   /// Test to verify that flux installs and reconciles kustomizations.
   /// </summary>
@@ -29,8 +30,8 @@ public class AllMethodsTests
 
     // Act
     await dockerProvisioner.CreateRegistryAsync("ksail-registry", 5555, cancellationToken: cancellationToken);
-    await Kind.DeleteClusterAsync(clusterName, cancellationToken);
-    await Kind.CreateClusterAsync(clusterName, configPath, cancellationToken);
+    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
+    await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken);
     await fluxProvisioner.PushManifestsAsync(new Uri($"oci://localhost:5555/{clusterName}"), manifestsDirectoryPath, cancellationToken: cancellationToken);
     var ociUri = new Uri($"oci://host.docker.internal:5555/{clusterName}");
     // Fix for Kind on Linux, that doesn't support host.docker.internal via --add-host
@@ -40,11 +41,11 @@ public class AllMethodsTests
     }
 
     await fluxProvisioner.BootstrapAsync(ociUri, kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
-    await fluxProvisioner.ReconcileAsync(["infrastructure-controllers", "infrastructure", "apps", "flux-system"], cancellationToken: cancellationToken);
+    await fluxProvisioner.ReconcileAsync(cancellationToken: cancellationToken);
     await fluxProvisioner.UninstallAsync(cancellationToken);
 
     // Cleanup
-    await Kind.DeleteClusterAsync(clusterName, cancellationToken);
+    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
     await dockerProvisioner.DeleteRegistryAsync("ksail-registry", cancellationToken);
   }
 }
