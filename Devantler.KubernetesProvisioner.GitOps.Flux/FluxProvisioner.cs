@@ -86,7 +86,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
             "--timeout", timeout
           };
           args.AddIfNotNull("--context={0}", Context);
-          if (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
+          while (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
           {
             Thread.Sleep(2500);
           }
