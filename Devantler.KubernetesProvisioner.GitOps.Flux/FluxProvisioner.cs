@@ -91,7 +91,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
           {
             if (DateTime.UtcNow - startTime > TimeSpan.Parse(timeout))
             {
-              throw new FluxException($"Reconciliation of Kustomization {kustomizationTuple.Name} timed out waiting for dependencies: {string.Join(", ", kustomizationTuple.Item2)}");
+              throw new FluxException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", $"'{kustomizationTuple.Item2}'")}");
             }
             await Task.Delay(2500, cancellationToken);
           }
