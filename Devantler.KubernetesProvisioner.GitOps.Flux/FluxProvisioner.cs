@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Concurrent;
+using System.Globalization;
 using Devantler.Commons.Extensions;
 using Devantler.FluxCLI;
 using Devantler.KubernetesProvisioner.GitOps.Core;
@@ -62,23 +63,33 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       .Select(d => (d.Name, kn.Item2))
     )];
 
+    var reconciledKustomizations = new ConcurrentBag<string>();
     foreach (var kustomizationTuple in kustomizationTuples)
     {
-      var args = new List<string>
+      var newTread = new Thread(async () =>
       {
-        "reconcile",
-        "kustomization",
-        kustomizationTuple.Name,
-        "--namespace", "flux-system",
-        "--with-source", "OCIRepository/flux-system",
-        "--timeout", timeout
-      };
-      args.AddIfNotNull("--context={0}", Context);
-      var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
-      if (exitCode != 0)
-      {
-        throw new FluxException($"Failed to reconcile Kustomization");
-      }
+        var args = new List<string>
+        {
+          "reconcile",
+          "kustomization",
+          kustomizationTuple.Name,
+          "--namespace", "flux-system",
+          "--with-source", "OCIRepository/flux-system",
+          "--timeout", timeout
+        };
+        args.AddIfNotNull("--context={0}", Context);
+        if (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
+        {
+          Thread.Sleep(2500);
+        }
+        var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+        if (exitCode != 0)
+        {
+          throw new FluxException($"Failed to reconcile Kustomization");
+        }
+        reconciledKustomizations.Add(kustomizationTuple.Name);
+      });
+      newTread.Start();
     }
   }
 
