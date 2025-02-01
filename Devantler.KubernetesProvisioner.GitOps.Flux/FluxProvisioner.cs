@@ -1,11 +1,12 @@
-﻿using System.Globalization;
+﻿using System.Collections.Concurrent;
+using System.Globalization;
 using Devantler.Commons.Extensions;
 using Devantler.FluxCLI;
 using Devantler.KubernetesProvisioner.GitOps.Core;
 using Devantler.KubernetesProvisioner.Resources.Native;
 using IdentityModel;
 using k8s;
-using k8s.Models;
+using Medallion.Collections;
 
 namespace Devantler.KubernetesProvisioner.GitOps.Flux;
 
@@ -16,7 +17,7 @@ namespace Devantler.KubernetesProvisioner.GitOps.Flux;
 /// Initializes a new instance of the <see cref="FluxProvisioner"/> class.
 /// </remarks>
 /// <param name="context"></param>
-public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
+public partial class FluxProvisioner(string? context = default) : IGitOpsProvisioner
 {
   /// <inheritdoc/>
   public string? Context { get; set; } = context;
@@ -45,27 +46,63 @@ public class FluxProvisioner(string? context = default) : IGitOpsProvisioner
     await CreateOCISourceAsync(ociSourceUrl, insecure: insecure, cancellationToken: cancellationToken).ConfigureAwait(false);
     await CreateKustomizationAsync(kustomizationDirectory, cancellationToken).ConfigureAwait(false);
   }
-
   /// <inheritdoc/>
   public async Task ReconcileAsync(string timeout = "5m", CancellationToken cancellationToken = default)
   {
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Context);
     await ReconcileOCISourceAsync(timeout: timeout, cancellationToken: cancellationToken).ConfigureAwait(false);
-    var kustomizations = await kubernetesResourceProvisioner.ListNamespacedCustomObjectAsync<V1CustomResourceDefinitionList>(
-      "kustomize.toolkit.fluxcd.io",
+    var kustomizationList = await kubernetesResourceProvisioner.ListNamespacedCustomObjectAsync<FluxKustomizationList>(
+     "kustomize.toolkit.fluxcd.io",
       "v1", "flux-system",
       "kustomizations", cancellationToken: cancellationToken).ConfigureAwait(false);
 
-    //TODO: Reconcile all kustomizations, where dependency lists are crawled and reconciled in the correct order.
-    // Cycle detection is required to prevent infinite loops.
-    // Multiple threads should be used to reconcile multiple independent kustomizations in parallel.
-    // For each kustomization, traverse the dependency graph, until an independent kustomization is found. Reconcile it in a separate thread, and mark it as in progres as it starts, and as reconciled when done. Repeat until all kustomizations are reconciled.
-    // The traversal should skip kustomizations that are already in progress or reconciled, and it should detect kustomizations that have no dependencies in relation to the status of the other kustomizations.
-    var reconciledKustomizations = new List<string>();
-    foreach (var kustomization in kustomizations.Items)
+    var kustomizationTuples = kustomizationList.Items.Select(k => (k.Metadata.Name, (k.Spec?.DependsOn ?? []).Select(d => d.Name))).ToList();
+    var kustomizationNames = kustomizationTuples.Select(k => k.Name).ToList();
+    kustomizationNames = [.. kustomizationNames.StableOrderTopologicallyBy(kn => kustomizationList.Items
+      .Where(k => k.Metadata.Name == kn)
+      .SelectMany(k => k.Spec?.DependsOn ?? [])
+      .Select(d => d.Name)
+    )];
+    kustomizationTuples = [.. kustomizationTuples.OrderBy(k => kustomizationNames.IndexOf(k.Name))];
+
+    var reconciledKustomizations = new ConcurrentBag<string>();
+    var semaphore = new SemaphoreSlim(10);
+    foreach (var kustomizationTuple in kustomizationTuples)
     {
-      string? kustomizationAsString = kustomization.ToString();
-      Console.WriteLine(kustomizationAsString);
+      await semaphore.WaitAsync(cancellationToken);
+
+      var newThread = new Thread(async () =>
+      {
+        try
+        {
+          var args = new List<string>
+          {
+            "reconcile",
+            "kustomization",
+            kustomizationTuple.Name,
+            "--namespace", "flux-system",
+            "--with-source", "OCIRepository/flux-system",
+            "--timeout", timeout
+          };
+          args.AddIfNotNull("--context={0}", Context);
+          if (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
+          {
+            Thread.Sleep(2500);
+          }
+          var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+          if (exitCode != 0)
+          {
+            throw new FluxException($"Failed to reconcile Kustomization");
+          }
+          reconciledKustomizations.Add(kustomizationTuple.Name);
+        }
+        finally
+        {
+          _ = semaphore.Release();
+        }
+      });
+
+      newThread.Start();
     }
   }
 
