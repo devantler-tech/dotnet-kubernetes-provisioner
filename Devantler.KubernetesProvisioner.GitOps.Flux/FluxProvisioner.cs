@@ -64,32 +64,43 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     )];
 
     var reconciledKustomizations = new ConcurrentBag<string>();
+    var semaphore = new SemaphoreSlim(10);
     foreach (var kustomizationTuple in kustomizationTuples)
     {
-      var newTread = new Thread(async () =>
+      await semaphore.WaitAsync(cancellationToken);
+
+      var newThread = new Thread(async () =>
       {
-        var args = new List<string>
+        try
         {
-          "reconcile",
-          "kustomization",
-          kustomizationTuple.Name,
-          "--namespace", "flux-system",
-          "--with-source", "OCIRepository/flux-system",
-          "--timeout", timeout
-        };
-        args.AddIfNotNull("--context={0}", Context);
-        if (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
-        {
-          Thread.Sleep(2500);
+          var args = new List<string>
+          {
+            "reconcile",
+            "kustomization",
+            kustomizationTuple.Name,
+            "--namespace", "flux-system",
+            "--with-source", "OCIRepository/flux-system",
+            "--timeout", timeout
+          };
+          args.AddIfNotNull("--context={0}", Context);
+          if (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
+          {
+            Thread.Sleep(2500);
+          }
+          var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+          if (exitCode != 0)
+          {
+            throw new FluxException($"Failed to reconcile Kustomization");
+          }
+          reconciledKustomizations.Add(kustomizationTuple.Name);
         }
-        var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
-        if (exitCode != 0)
+        finally
         {
-          throw new FluxException($"Failed to reconcile Kustomization");
+          _ = semaphore.Release();
         }
-        reconciledKustomizations.Add(kustomizationTuple.Name);
       });
-      newTread.Start();
+
+      newThread.Start();
     }
   }
 
