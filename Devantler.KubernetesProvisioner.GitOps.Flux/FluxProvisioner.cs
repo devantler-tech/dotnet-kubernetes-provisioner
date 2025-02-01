@@ -57,11 +57,13 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       "kustomizations", cancellationToken: cancellationToken).ConfigureAwait(false);
 
     var kustomizationTuples = kustomizationList.Items.Select(k => (k.Metadata.Name, (k.Spec?.DependsOn ?? []).Select(d => d.Name))).ToList();
-    kustomizationTuples = [.. kustomizationTuples.StableOrderTopologicallyBy(kn => kustomizationList.Items
-      .Where(k => k.Metadata.Name == kn.Name)
+    var kustomizationNames = kustomizationTuples.Select(k => k.Name).ToList();
+    kustomizationNames = [.. kustomizationNames.StableOrderTopologicallyBy(kn => kustomizationList.Items
+      .Where(k => k.Metadata.Name == kn)
       .SelectMany(k => k.Spec?.DependsOn ?? [])
-      .Select(d => (d.Name, kn.Item2))
+      .Select(d => d.Name)
     )];
+    kustomizationTuples = [.. kustomizationTuples.OrderBy(k => kustomizationNames.IndexOf(k.Name))];
 
     var reconciledKustomizations = new ConcurrentBag<string>();
     var semaphore = new SemaphoreSlim(10);
