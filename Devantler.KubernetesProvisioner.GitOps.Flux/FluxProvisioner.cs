@@ -55,20 +55,20 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       "v1", "flux-system",
       "kustomizations", cancellationToken: cancellationToken).ConfigureAwait(false);
 
-    var kustomizationNames = kustomizationList.Items.Select(k => k.Metadata.Name).ToList();
-    kustomizationNames = [.. kustomizationNames.StableOrderTopologicallyBy(kn => kustomizationList.Items
-      .Where(k => k.Metadata.Name == kn)
+    var kustomizationTuples = kustomizationList.Items.Select(k => (k.Metadata.Name, (k.Spec?.DependsOn ?? []).Select(d => d.Name))).ToList();
+    kustomizationTuples = [.. kustomizationTuples.StableOrderTopologicallyBy(kn => kustomizationList.Items
+      .Where(k => k.Metadata.Name == kn.Name)
       .SelectMany(k => k.Spec?.DependsOn ?? [])
-      .Select(d => d.Name)
+      .Select(d => (d.Name, kn.Item2))
     )];
 
-    foreach (string kustomizationName in kustomizationNames)
+    foreach (var kustomizationTuple in kustomizationTuples)
     {
       var args = new List<string>
       {
         "reconcile",
         "kustomization",
-        kustomizationName,
+        kustomizationTuple.Name,
         "--namespace", "flux-system",
         "--with-source", "OCIRepository/flux-system",
         "--timeout", timeout
