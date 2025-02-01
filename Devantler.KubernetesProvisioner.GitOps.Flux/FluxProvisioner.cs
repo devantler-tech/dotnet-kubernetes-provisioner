@@ -243,8 +243,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       "--path", kustomizationDirectory,
       "--namespace", "flux-system",
       "--interval", "5m",
-      "--prune",
-      "--wait"
+      "--prune"
     };
     args.AddIfNotNull("--context={0}", Context);
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
