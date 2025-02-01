@@ -67,11 +67,12 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
 
     var reconciledKustomizations = new ConcurrentBag<string>();
     var semaphore = new SemaphoreSlim(10);
+    var tasks = new List<Task>();
     foreach (var kustomizationTuple in kustomizationTuples)
     {
       await semaphore.WaitAsync(cancellationToken);
 
-      var newThread = new Thread(async () =>
+      var task = Task.Run(async () =>
       {
         try
         {
@@ -100,11 +101,12 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
         {
           _ = semaphore.Release();
         }
-      });
+      }, cancellationToken);
 
-      newThread.Start();
+      tasks.Add(task);
     }
-    await semaphore.WaitAsync(cancellationToken);
+
+    await Task.WhenAll(tasks).ConfigureAwait(false);
   }
 
   /// <summary>
