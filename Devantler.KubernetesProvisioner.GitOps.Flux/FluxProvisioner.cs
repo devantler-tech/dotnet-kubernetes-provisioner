@@ -104,6 +104,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
 
       newThread.Start();
     }
+    await semaphore.WaitAsync(cancellationToken);
   }
 
   /// <summary>
