@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Globalization;
 using Devantler.Commons.Extensions;
+using Devantler.Commons.Utils;
 using Devantler.FluxCLI;
 using Devantler.KubernetesProvisioner.GitOps.Core;
 using Devantler.KubernetesProvisioner.Resources.Native;
@@ -89,7 +90,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
           var startTime = DateTime.UtcNow;
           while (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
           {
-            if (DateTime.UtcNow - startTime > TimeSpan.Parse(timeout))
+            if (DateTime.UtcNow - startTime > TimeSpanHelper.ParseDuration(timeout))
             {
               throw new FluxException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", $"'{kustomizationTuple.Item2}'")}");
             }
