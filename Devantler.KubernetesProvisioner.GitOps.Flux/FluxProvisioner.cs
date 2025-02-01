@@ -56,14 +56,13 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       "kustomizations", cancellationToken: cancellationToken).ConfigureAwait(false);
 
     var kustomizationNames = kustomizationList.Items.Select(k => k.Metadata.Name).ToList();
-    // Sort the kustomizations in a stable order topologically by DependsOn names.
-    var sortedKustomizations = kustomizationNames.StableOrderTopologicallyBy(kn => kustomizationList.Items
+    kustomizationNames = [.. kustomizationNames.StableOrderTopologicallyBy(kn => kustomizationList.Items
       .Where(k => k.Metadata.Name == kn)
       .SelectMany(k => k.Spec?.DependsOn ?? [])
       .Select(d => d.Name)
-    );
+    )];
 
-    foreach (string kustomizationName in sortedKustomizations)
+    foreach (string kustomizationName in kustomizationNames)
     {
       var args = new List<string>
       {
