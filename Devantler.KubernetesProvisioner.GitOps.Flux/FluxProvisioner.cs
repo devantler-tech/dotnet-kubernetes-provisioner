@@ -86,9 +86,14 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
             "--timeout", timeout
           };
           args.AddIfNotNull("--context={0}", Context);
+          var startTime = DateTime.UtcNow;
           while (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
           {
-            Thread.Sleep(2500);
+            if (DateTime.UtcNow - startTime > TimeSpan.Parse(timeout))
+            {
+              throw new TimeoutException($"Reconciliation of Kustomization {kustomizationTuple.Name} timed out.");
+            }
+            await Task.Delay(2500, cancellationToken);
           }
           var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
           if (exitCode != 0)
