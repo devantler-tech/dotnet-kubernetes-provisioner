@@ -140,7 +140,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
   /// <exception cref="FluxException"></exception>
-  public static async Task PushArtifactAsync(Uri registryUri, string manifestsDirectory, string revision, CancellationToken cancellationToken)
+  public static async Task PushArtifactAsync(Uri registryUri, string manifestsDirectory, string revision, CancellationToken cancellationToken = default)
   {
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
       "push",
@@ -165,7 +165,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
   /// <exception cref="FluxException"></exception>
-  public static async Task TagArtifactAsync(Uri registryUri, string revision, CancellationToken cancellationToken)
+  public static async Task TagArtifactAsync(Uri registryUri, string revision, CancellationToken cancellationToken = default)
   {
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
         "tag",
@@ -186,7 +186,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
   /// <exception cref="FluxException"></exception>
-  public async Task InstallAsync(CancellationToken cancellationToken)
+  public async Task InstallAsync(CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "install", };
     args.AddIfNotNull("--context={0}", Context);
@@ -242,7 +242,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="interval"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public async Task CreateKustomizationAsync(string kustomizationDirectory, string interval = "5m", CancellationToken cancellationToken)
+  public async Task CreateKustomizationAsync(string kustomizationDirectory, string interval = "5m", CancellationToken cancellationToken = default)
   {
     var args = new List<string>
     {
