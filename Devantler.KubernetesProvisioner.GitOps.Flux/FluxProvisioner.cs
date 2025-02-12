@@ -45,7 +45,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   {
     await InstallAsync(cancellationToken).ConfigureAwait(false);
     await CreateOCISourceAsync(ociSourceUrl, insecure: insecure, interval: "30s", cancellationToken: cancellationToken).ConfigureAwait(false);
-    await CreateKustomizationAsync(kustomizationDirectory, cancellationToken).ConfigureAwait(false);
+    await CreateKustomizationAsync(kustomizationDirectory, interval: "1m", cancellationToken).ConfigureAwait(false);
   }
   /// <inheritdoc/>
   public async Task ReconcileAsync(string timeout = "5m", CancellationToken cancellationToken = default)
@@ -140,7 +140,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
   /// <exception cref="FluxException"></exception>
-  public static async Task PushArtifactAsync(Uri registryUri, string manifestsDirectory, string revision, CancellationToken cancellationToken)
+  public static async Task PushArtifactAsync(Uri registryUri, string manifestsDirectory, string revision, CancellationToken cancellationToken = default)
   {
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
       "push",
@@ -165,7 +165,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
   /// <exception cref="FluxException"></exception>
-  public static async Task TagArtifactAsync(Uri registryUri, string revision, CancellationToken cancellationToken)
+  public static async Task TagArtifactAsync(Uri registryUri, string revision, CancellationToken cancellationToken = default)
   {
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
         "tag",
@@ -186,7 +186,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
   /// <exception cref="FluxException"></exception>
-  public async Task InstallAsync(CancellationToken cancellationToken)
+  public async Task InstallAsync(CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "install", };
     args.AddIfNotNull("--context={0}", Context);
@@ -239,9 +239,10 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// Create a Kustomization.
   /// </summary>
   /// <param name="kustomizationDirectory"></param>
+  /// <param name="interval"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public async Task CreateKustomizationAsync(string kustomizationDirectory, CancellationToken cancellationToken)
+  public async Task CreateKustomizationAsync(string kustomizationDirectory, string interval = "5m", CancellationToken cancellationToken = default)
   {
     var args = new List<string>
     {
@@ -251,7 +252,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       "--source", "OCIRepository/flux-system",
       "--path", kustomizationDirectory,
       "--namespace", "flux-system",
-      "--interval", "5m",
+      "--interval", interval,
       "--prune",
       "--wait"
     };
