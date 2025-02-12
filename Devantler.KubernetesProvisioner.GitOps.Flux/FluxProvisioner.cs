@@ -45,7 +45,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   {
     await InstallAsync(cancellationToken).ConfigureAwait(false);
     await CreateOCISourceAsync(ociSourceUrl, insecure: insecure, interval: "30s", cancellationToken: cancellationToken).ConfigureAwait(false);
-    await CreateKustomizationAsync(kustomizationDirectory, cancellationToken).ConfigureAwait(false);
+    await CreateKustomizationAsync(kustomizationDirectory, interval: "1m", cancellationToken).ConfigureAwait(false);
   }
   /// <inheritdoc/>
   public async Task ReconcileAsync(string timeout = "5m", CancellationToken cancellationToken = default)
@@ -239,9 +239,10 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// Create a Kustomization.
   /// </summary>
   /// <param name="kustomizationDirectory"></param>
+  /// <param name="interval"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public async Task CreateKustomizationAsync(string kustomizationDirectory, CancellationToken cancellationToken)
+  public async Task CreateKustomizationAsync(string kustomizationDirectory, string interval = "5m", CancellationToken cancellationToken)
   {
     var args = new List<string>
     {
@@ -251,7 +252,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       "--source", "OCIRepository/flux-system",
       "--path", kustomizationDirectory,
       "--namespace", "flux-system",
-      "--interval", "5m",
+      "--interval", interval,
       "--prune",
       "--wait"
     };
