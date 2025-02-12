@@ -44,7 +44,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   public async Task BootstrapAsync(Uri ociSourceUrl, string kustomizationDirectory, bool insecure = false, CancellationToken cancellationToken = default)
   {
     await InstallAsync(cancellationToken).ConfigureAwait(false);
-    await CreateOCISourceAsync(ociSourceUrl, insecure: insecure, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await CreateOCISourceAsync(ociSourceUrl, insecure: insecure, interval: "30s", cancellationToken: cancellationToken).ConfigureAwait(false);
     await CreateKustomizationAsync(kustomizationDirectory, cancellationToken).ConfigureAwait(false);
   }
   /// <inheritdoc/>
