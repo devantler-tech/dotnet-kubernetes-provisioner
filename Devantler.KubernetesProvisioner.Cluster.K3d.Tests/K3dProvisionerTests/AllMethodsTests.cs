@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace Devantler.KubernetesProvisioner.Cluster.K3d.Tests.K3dProvisionerTests;
 
 /// <summary>
@@ -15,6 +17,12 @@ public class AllMethodsTests
   [Fact]
   public async Task AllMethods_WithValidParameters_Succeeds()
   {
+    //TODO: Support MacOS and Windows, when dind is supported in GitHub Actions Runners on those platforms
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+    {
+      return;
+    }
+
     // Arrange
     string clusterName = "test-k3d-cluster";
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/k3d-config.yaml");

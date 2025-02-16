@@ -18,6 +18,12 @@ public class AllMethodsTests
   [Fact]
   public async Task Flux_InstallsAndReconciles_KustomizationsAsync()
   {
+    //TODO: Support MacOS and Windows, when dind is supported in GitHub Actions Runners on those platforms
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+    {
+      return;
+    }
+
     // Arrange
     string clusterName = "test-flux-cluster";
     string context = "kind-" + clusterName;
