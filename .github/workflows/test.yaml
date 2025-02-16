@@ -1,52 +1,10 @@
-name: Test
-
+name: Test .NET solution or project
 on:
-  pull_request:
-    # Added 'edited' temporarily, as there currently is no trigger for when the base branch is updated.
-    # https://github.com/orgs/community/discussions/64119
-    types: [opened, synchronize, reopened, ready_for_review, closed, edited]
-    branches: main
   push:
-    branches: main
-  workflow_dispatch: {}
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+    branches:
+      - main
 
 jobs:
   test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
-    if: github.event.pull_request.draft == false
-    steps:
-      - name: 📑 Checkout
-        uses: actions/checkout@v4
-      - name: ⚙️ Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 9
-      - name: 🧪 Test
-        run: |
-          dotnet test --collect:"XPlat Code Coverage"
-      - name: 📄 Get Coverage Files
-        id: get_coverage_files
-        if: matrix.os != 'windows-latest'
-        run: |
-          coverage_files=$(find . -name 'coverage.cobertura.xml' -print0 | tr '\0' ',' | sed 's/,$//')
-          echo "COVERAGE_FILES=$coverage_files" >> "$GITHUB_OUTPUT"
-      - name: 📄 Get Coverage Files on Windows
-        id: get_coverage_files_windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          $coverage_files = Get-ChildItem -Path . -Recurse -Filter coverage.cobertura.xml -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
-          $coverage_files = $coverage_files -join ','
-          echo "COVERAGE_FILES=$coverage_files" >> "$GITHUB_OUTPUT"
-      - name: 📄 Upload Code Coverage to CodeCov
-        uses: codecov/codecov-action@v5
-        with:
-          files: ${{ steps.get_coverage_files.outputs.COVERAGE_FILES }}
-          fail_ci_if_error: true
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    uses: devantler-tech/.github/.github/workflows/dotnet-test.yaml@main
+    secrets: inherit

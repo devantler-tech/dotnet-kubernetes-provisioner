@@ -7,5 +7,5 @@ on:
 
 jobs:
   call-dotnet-publish-workflow:
-    uses: devantler-tech/.github/.github/workflows/dotnet-publish.yaml@main
+    uses: devantler-tech/.github/.github/workflows/dotnet-library-publish.yaml@main
     secrets: inherit
