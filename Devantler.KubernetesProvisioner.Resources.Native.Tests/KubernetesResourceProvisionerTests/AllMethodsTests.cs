@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
 using k8s;
 using k8s.Models;
@@ -18,6 +19,12 @@ public class AllMethodsTests
   [Fact]
   public async Task AllMethods_WithValidParameters_Succeeds()
   {
+    //TODO: Support MacOS and Windows, when dind is supported in GitHub Actions Runners on those platforms
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+    {
+      return;
+    }
+
     // Arrange
     string clusterName = "test-native-cluster";
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind-config.yaml");
