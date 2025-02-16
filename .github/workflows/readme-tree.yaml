@@ -5,51 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  tree:
-    runs-on: ubuntu-latest
-    name: readme-tree
-    steps:
-      - uses: actions/checkout@v4
-      - name: Create README Tree
-        uses: RavelloH/readme-tree@v1.1.0
-        with:
-          showdirectoryname: "yes"
-      - name: Generate GitHub App Token
-        uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Get GitHub App User ID
-        id: get-user-id
-        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-      - name: Create Pull Request
-        id: create-pull-request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          branch: update-readme-tree
-          commit-message: Update README Tree
-          title: Update README Tree
-          body: This PR includes new updates to the README Tree.
-          labels: chore
-          delete-branch: true
-          reviewers: devantler
-          assignees: devantler
-          signoff: true
-          token: ${{ steps.app-token.outputs.token }}
-          author: ${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
-          committer: ${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
-          sign-commits: true
-      - name: Enable Pull Request Automerge
-        if: steps.create-pull-request.outputs.pull-request-operation != 'none'
-        run: gh pr merge --merge --auto ${{ steps.create-pull-request.outputs.pull-request-number }}
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-
+  call-readme-tree-workflow:
+    uses: devantler-tech/.github/.github/workflows/readme-tree.yaml@main
+    secrets: inherit
