@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  packages: write
+
 jobs:
   publish:
     uses: devantler-tech/.github/.github/workflows/dotnet-library-publish.yaml@main
