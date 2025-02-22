@@ -19,7 +19,7 @@ public class AllMethodsTests
   public async Task Flux_InstallsAndReconciles_KustomizationsAsync()
   {
     //TODO: Support MacOS and Windows, when dind is supported in GitHub Actions Runners on those platforms
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+    if ((RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) && Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true")
     {
       return;
     }
