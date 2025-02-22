@@ -58,6 +58,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       "create",
       "cluster",
       "--name", clusterName,
+      "--network", clusterName,
       "--config", configPath
     };
     var (exitCode, _) = await KindCLI.Kind.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
