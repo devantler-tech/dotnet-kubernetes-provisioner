@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.GitOps.Core\Devantler.KubernetesProvisioner.GitOps.Core.csproj" />
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Resources.Native\Devantler.KubernetesProvisioner.Resources.Native.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.GitOps.Core\Devantler.KubernetesProvisioner.GitOps.Core.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.Resources.Native\Devantler.KubernetesProvisioner.Resources.Native.csproj" />
   </ItemGroup>
 
 </Project>

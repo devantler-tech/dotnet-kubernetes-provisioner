@@ -19,14 +19,16 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2" />
     <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="1.1.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Cluster.Kind\Devantler.KubernetesProvisioner.Cluster.Kind.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.GitOps.Flux\Devantler.KubernetesProvisioner.GitOps.Flux.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.Cluster.Kind\Devantler.KubernetesProvisioner.Cluster.Kind.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="assets/kind-config.yaml" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="assets/**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

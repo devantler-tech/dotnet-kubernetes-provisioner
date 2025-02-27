@@ -22,11 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Cluster.K3d\Devantler.KubernetesProvisioner.Cluster.K3d.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="assets/k3d-config.yaml" CopyToOutputDirectory="PreserveNewest" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.Cluster.Core\Devantler.KubernetesProvisioner.Cluster.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
