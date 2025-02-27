@@ -14,33 +14,37 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
 .
 ├── .github
 │   └── workflows
-├── Devantler.KubernetesProvisioner.Cluster.Core
-├── Devantler.KubernetesProvisioner.Cluster.K3d
-├── Devantler.KubernetesProvisioner.Cluster.K3d.Tests
-│   ├── K3dProvisionerTests
-│   └── assets
-├── Devantler.KubernetesProvisioner.Cluster.Kind
-├── Devantler.KubernetesProvisioner.Cluster.Kind.Tests
-│   ├── KindProvisionerTests
-│   └── assets
-├── Devantler.KubernetesProvisioner.GitOps.Core
-├── Devantler.KubernetesProvisioner.GitOps.Flux
-├── Devantler.KubernetesProvisioner.GitOps.Flux.Tests
-│   ├── FluxProvisionerTests
-│   └── assets
-│       └── k8s
-│           ├── apps
-│           ├── clusters
-│           │   └── test-flux-cluster
-│           │       └── flux-system
-│           └── infrastructure
-│               └── controllers
-├── Devantler.KubernetesProvisioner.Resources.Native
-└── Devantler.KubernetesProvisioner.Resources.Native.Tests
-    ├── KubernetesResourceProvisionerTests
-    └── assets
+├── src
+│   ├── Devantler.KubernetesProvisioner.Cluster.Core
+│   ├── Devantler.KubernetesProvisioner.Cluster.K3d
+│   ├── Devantler.KubernetesProvisioner.Cluster.Kind
+│   ├── Devantler.KubernetesProvisioner.GitOps.Core
+│   ├── Devantler.KubernetesProvisioner.GitOps.Flux
+│   └── Devantler.KubernetesProvisioner.Resources.Native
+└── tests
+    ├── Devantler.KubernetesProvisioner.Cluster.Core.Tests
+    ├── Devantler.KubernetesProvisioner.Cluster.K3d.Tests
+    │   ├── K3dProvisionerTests
+    │   └── assets
+    ├── Devantler.KubernetesProvisioner.Cluster.Kind.Tests
+    │   ├── KindProvisionerTests
+    │   └── assets
+    ├── Devantler.KubernetesProvisioner.GitOps.Core.Tests
+    ├── Devantler.KubernetesProvisioner.GitOps.Flux.Tests
+    │   ├── FluxProvisionerTests
+    │   └── assets
+    │       └── k8s
+    │           ├── apps
+    │           ├── clusters
+    │           │   └── test-flux-cluster
+    │           │       └── flux-system
+    │           └── infrastructure
+    │               └── controllers
+    └── Devantler.KubernetesProvisioner.Resources.Native.Tests
+        ├── KubernetesResourceProvisionerTests
+        └── assets
 
-28 directories
+32 directories
 ```
 <!-- readme-tree end -->
 
