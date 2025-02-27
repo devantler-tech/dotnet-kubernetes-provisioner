@@ -1,5 +1,4 @@
-﻿using Devantler.KindCLI;
-using Devantler.KubernetesProvisioner.Cluster.Core;
+﻿using Devantler.KubernetesProvisioner.Cluster.Core;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using k8s;
@@ -26,7 +25,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
     var (exitCode, _) = await KindCLI.Kind.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new KindException("Failed to delete Kind cluster.");
+      throw new KubernetesClusterProvisionerException("Failed to delete Kind cluster.");
     }
   }
 
@@ -44,7 +43,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
     var (exitCode, result) = await KindCLI.Kind.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new KindException("Failed to list Kind clusters.");
+      throw new KubernetesClusterProvisionerException("Failed to list Kind clusters.");
     }
     string[] clusterNames = result.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
     return clusterNames;
@@ -63,7 +62,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
     var (exitCode, _) = await KindCLI.Kind.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new KindException("Failed to create Kind cluster.");
+      throw new KubernetesClusterProvisionerException("Failed to create Kind cluster.");
     }
   }
 
