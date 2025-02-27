@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.GitOps.Flux\Devantler.KubernetesProvisioner.GitOps.Flux.csproj" />
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Cluster.Kind\Devantler.KubernetesProvisioner.Cluster.Kind.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.GitOps.Flux\Devantler.KubernetesProvisioner.GitOps.Flux.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.Cluster.Kind\Devantler.KubernetesProvisioner.Cluster.Kind.csproj" />
   </ItemGroup>
 
   <ItemGroup>

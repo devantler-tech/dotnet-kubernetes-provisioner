@@ -1,6 +1,4 @@
-using Devantler.KubernetesProvisioner.Cluster.Core;
-
-namespace Devantler.KubernetesProvisioner.Cluster.Kind.Tests;
+namespace Devantler.KubernetesProvisioner.Cluster.Core.Tests;
 
 /// <summary>
 /// Tests for the <see cref="KubernetesClusterProvisionerException"/> class.

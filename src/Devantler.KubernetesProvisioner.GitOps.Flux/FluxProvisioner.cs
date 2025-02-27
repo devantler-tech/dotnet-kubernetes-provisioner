@@ -2,7 +2,6 @@
 using System.Globalization;
 using Devantler.Commons.Extensions;
 using Devantler.Commons.Utils;
-using Devantler.FluxCLI;
 using Devantler.KubernetesProvisioner.GitOps.Core;
 using Devantler.KubernetesProvisioner.Resources.Native;
 using IdentityModel;
@@ -92,14 +91,14 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
           {
             if (DateTime.UtcNow - startTime > TimeSpanHelper.ParseDuration(timeout))
             {
-              throw new FluxException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", $"'{kustomizationTuple.Item2}'")}");
+              throw new KubernetesGitOpsProvisionerException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", $"'{kustomizationTuple.Item2}'")}");
             }
             await Task.Delay(2500, cancellationToken);
           }
           var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
           if (exitCode != 0)
           {
-            throw new FluxException($"Failed to reconcile Kustomization");
+            throw new KubernetesGitOpsProvisionerException($"Failed to reconcile Kustomization");
           }
           reconciledKustomizations.Add(kustomizationTuple.Name);
         }
@@ -127,7 +126,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     var (exitCode, output) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0 || output.Contains("connection refused", StringComparison.OrdinalIgnoreCase))
     {
-      throw new FluxException($"Failed to uninstall flux");
+      throw new KubernetesGitOpsProvisionerException($"Failed to uninstall flux");
     }
   }
 
@@ -139,7 +138,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="revision"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  /// <exception cref="FluxException"></exception>
+  /// <exception cref="KubernetesGitOpsProvisionerException"></exception>
   public static async Task PushArtifactAsync(Uri registryUri, string manifestsDirectory, string revision, CancellationToken cancellationToken = default)
   {
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
@@ -153,7 +152,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     );
     if (exitCode != 0)
     {
-      throw new FluxException($"Failed to push artifact");
+      throw new KubernetesGitOpsProvisionerException($"Failed to push artifact");
     }
   }
 
@@ -164,7 +163,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="revision"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  /// <exception cref="FluxException"></exception>
+  /// <exception cref="KubernetesGitOpsProvisionerException"></exception>
   public static async Task TagArtifactAsync(Uri registryUri, string revision, CancellationToken cancellationToken = default)
   {
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
@@ -176,7 +175,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     );
     if (exitCode != 0)
     {
-      throw new FluxException($"Failed to tag artifact");
+      throw new KubernetesGitOpsProvisionerException($"Failed to tag artifact");
     }
   }
 
@@ -185,7 +184,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// </summary>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  /// <exception cref="FluxException"></exception>
+  /// <exception cref="KubernetesGitOpsProvisionerException"></exception>
   public async Task InstallAsync(CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "install", };
@@ -193,7 +192,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new FluxException($"Failed to install flux");
+      throw new KubernetesGitOpsProvisionerException($"Failed to install flux");
     }
   }
 
@@ -231,7 +230,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken);
     if (exitCode != 0)
     {
-      throw new FluxException($"Failed to create OCI source");
+      throw new KubernetesGitOpsProvisionerException($"Failed to create OCI source");
     }
   }
 
@@ -260,7 +259,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new FluxException($"Failed to create Kustomization");
+      throw new KubernetesGitOpsProvisionerException($"Failed to create Kustomization");
     }
   }
 
@@ -272,7 +271,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <param name="timeout"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  /// <exception cref="FluxException"></exception>
+  /// <exception cref="KubernetesGitOpsProvisionerException"></exception>
   public async Task ReconcileOCISourceAsync(string name = "flux-system", string @namespace = "flux-system", string timeout = "5m", CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "reconcile", "source", "oci", name, "--namespace", @namespace, "--timeout", timeout };
@@ -280,7 +279,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new FluxException($"Failed to reconcile OCI source");
+      throw new KubernetesGitOpsProvisionerException($"Failed to reconcile OCI source");
     }
   }
 }

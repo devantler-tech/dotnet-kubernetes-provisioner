@@ -12,11 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Devantler.K3dCLI" Version="1.2.1" />
+    <PackageReference Include="Devantler.KindCLI" Version="1.2.1" />
+    <PackageReference Include="Docker.DotNet" Version="3.125.15" />
+    <PackageReference Include="KubernetesClient" Version="16.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Cluster.Core\Devantler.KubernetesProvisioner.Cluster.Core.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.Cluster.Core\Devantler.KubernetesProvisioner.Cluster.Core.csproj" />
   </ItemGroup>
 
 </Project>

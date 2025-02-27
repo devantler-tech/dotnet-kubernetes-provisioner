@@ -22,15 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Cluster.Kind\Devantler.KubernetesProvisioner.Cluster.Kind.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="assets/kind-config.yaml" CopyToOutputDirectory="PreserveNewest" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.GitOps.Core\Devantler.KubernetesProvisioner.GitOps.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
-
 </Project>

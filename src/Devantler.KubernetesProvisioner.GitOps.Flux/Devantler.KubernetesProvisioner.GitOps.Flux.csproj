@@ -12,15 +12,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Devantler.FluxCLI" Version="1.4.0" />
+    <PackageReference Include="Devantler.FluxCLI" Version="1.4.1" />
     <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="1.2.*" />
     <PackageReference Include="Devantler.Commons.Utils" Version="0.4.*" />
     <PackageReference Include="MedallionTopologicalSort" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.GitOps.Core\Devantler.KubernetesProvisioner.GitOps.Core.csproj" />
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Resources.Native\Devantler.KubernetesProvisioner.Resources.Native.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.GitOps.Core\Devantler.KubernetesProvisioner.GitOps.Core.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.Resources.Native\Devantler.KubernetesProvisioner.Resources.Native.csproj" />
   </ItemGroup>
 
 </Project>

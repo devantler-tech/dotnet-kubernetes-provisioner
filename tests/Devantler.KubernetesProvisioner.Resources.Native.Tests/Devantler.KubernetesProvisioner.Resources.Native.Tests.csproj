@@ -22,14 +22,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devantler.KubernetesProvisioner.Cluster.K3d\Devantler.KubernetesProvisioner.Cluster.K3d.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.Resources.Native\Devantler.KubernetesProvisioner.Resources.Native.csproj" />
+    <ProjectReference Include="..\..\src\Devantler.KubernetesProvisioner.Cluster.Kind\Devantler.KubernetesProvisioner.Cluster.Kind.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="assets/k3d-config.yaml" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="assets/kind-config.yaml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
+
 </Project>
