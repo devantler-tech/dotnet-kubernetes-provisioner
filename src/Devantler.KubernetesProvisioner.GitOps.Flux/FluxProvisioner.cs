@@ -28,8 +28,8 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     long currentTimeEpoch = DateTime.Now.ToEpochTime();
     string revision = currentTimeEpoch.ToString(CultureInfo.InvariantCulture);
 
-    await PushArtifactAsync(registryUri, manifestsDirectory, revision, cancellationToken);
-    await TagArtifactAsync(registryUri, revision, cancellationToken);
+    await PushArtifactAsync(registryUri, manifestsDirectory, revision, cancellationToken).ConfigureAwait(false);
+    await TagArtifactAsync(registryUri, revision, cancellationToken).ConfigureAwait(false);
   }
 
   /// <summary>
@@ -70,7 +70,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     var tasks = new List<Task>();
     foreach (var kustomizationTuple in kustomizationTuples)
     {
-      await semaphore.WaitAsync(cancellationToken);
+      await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
       var task = Task.Run(async () =>
       {
@@ -93,7 +93,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
             {
               throw new KubernetesGitOpsProvisionerException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", $"'{kustomizationTuple.Item2}'")}");
             }
-            await Task.Delay(2500, cancellationToken);
+            await Task.Delay(2500, cancellationToken).ConfigureAwait(false);
           }
           var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
           if (exitCode != 0)
@@ -149,7 +149,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       "--source", registryUri.ToString(),
       "--revision", revision],
       cancellationToken: cancellationToken
-    );
+    ).ConfigureAwait(false);
     if (exitCode != 0)
     {
       throw new KubernetesGitOpsProvisionerException($"Failed to push artifact");
@@ -172,7 +172,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
         $"{registryUri}:{revision}",
         "--tag", "latest"
       ], cancellationToken: cancellationToken
-    );
+    ).ConfigureAwait(false);
     if (exitCode != 0)
     {
       throw new KubernetesGitOpsProvisionerException($"Failed to tag artifact");
@@ -227,7 +227,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     };
     args.AddIfNotNull("--context={0}", Context);
 
-    var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken);
+    var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
       throw new KubernetesGitOpsProvisionerException($"Failed to create OCI source");

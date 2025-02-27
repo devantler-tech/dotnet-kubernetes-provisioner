@@ -82,7 +82,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
           container.ID,
           new ContainerStartParameters(),
           cancellationToken
-        );
+        ).ConfigureAwait(false);
       }
     }
     using var kubernetesClient = new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigObject(KubernetesClientConfiguration.LoadKubeConfig(), "kind-" + clusterName));
