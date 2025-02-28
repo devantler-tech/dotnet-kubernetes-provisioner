@@ -47,7 +47,7 @@ dotnet_naming_rule.constants_should_be_pascal_case.style = constant_style
 # Apply our rule to constants.
 dotnet_naming_style.constant_style.capitalization = pascal_case
 
-# Disable CA1014
+# Disable rules
 dotnet_diagnostic.CA1014.severity = none
 
 [*.{received,verified}.*]

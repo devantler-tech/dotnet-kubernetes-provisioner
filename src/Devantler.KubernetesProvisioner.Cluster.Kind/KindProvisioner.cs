@@ -85,7 +85,9 @@ public class KindProvisioner : IKubernetesClusterProvisioner
         ).ConfigureAwait(false);
       }
     }
-    using var kubernetesClient = new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigObject(KubernetesClientConfiguration.LoadKubeConfig(), "kind-" + clusterName));
+    using var kubernetesClient = new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigObject(
+      await KubernetesClientConfiguration.LoadKubeConfigAsync().ConfigureAwait(false), "kind-" + clusterName)
+    );
     while (true)
     {
       try

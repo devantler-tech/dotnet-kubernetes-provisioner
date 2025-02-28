@@ -44,7 +44,7 @@ public class KubernetesGitOpsProvisionerExceptionTests
   {
     // Arrange
     string message = "Test message";
-    var innerException = new Exception("Inner exception");
+    var innerException = new KubernetesGitOpsProvisionerException("Inner exception");
 
     // Act
     var exception = new KubernetesGitOpsProvisionerException(message, innerException);

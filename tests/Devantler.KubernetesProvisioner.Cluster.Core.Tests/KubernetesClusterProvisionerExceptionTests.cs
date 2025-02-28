@@ -44,7 +44,7 @@ public class KubernetesClusterProvisionerExceptionTests
   {
     // Arrange
     string message = "Test message";
-    var innerException = new Exception("Inner exception");
+    var innerException = new KubernetesClusterProvisionerException("Inner exception");
 
     // Act
     var exception = new KubernetesClusterProvisionerException(message, innerException);

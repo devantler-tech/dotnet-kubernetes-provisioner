@@ -1,7 +1,9 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Devantler.Commons.Extensions;
 using Devantler.Commons.Utils;
+using Devantler.KubernetesGenerator.Flux.Models.Kustomization;
 using Devantler.KubernetesProvisioner.GitOps.Core;
 using Devantler.KubernetesProvisioner.Resources.Native;
 using IdentityModel;
@@ -66,7 +68,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     kustomizationTuples = [.. kustomizationTuples.OrderBy(k => kustomizationNames.IndexOf(k.Name))];
 
     var reconciledKustomizations = new ConcurrentBag<string>();
-    var semaphore = new SemaphoreSlim(10);
+    using var semaphore = new SemaphoreSlim(10);
     var tasks = new List<Task>();
     foreach (var kustomizationTuple in kustomizationTuples)
     {
@@ -141,6 +143,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <exception cref="KubernetesGitOpsProvisionerException"></exception>
   public static async Task PushArtifactAsync(Uri registryUri, string manifestsDirectory, string revision, CancellationToken cancellationToken = default)
   {
+    ArgumentNullException.ThrowIfNull(registryUri, nameof(registryUri));
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
       "push",
       "artifact",
@@ -216,6 +219,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
     CancellationToken cancellationToken = default
   )
   {
+    ArgumentNullException.ThrowIfNull(url, nameof(url));
     var args = new List<string>
     {
       "create", "source", "oci", name,
