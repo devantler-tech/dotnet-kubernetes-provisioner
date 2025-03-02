@@ -1,9 +1,7 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using Devantler.Commons.Extensions;
 using Devantler.Commons.Utils;
-using Devantler.KubernetesGenerator.Flux.Models.Kustomization;
 using Devantler.KubernetesProvisioner.GitOps.Core;
 using Devantler.KubernetesProvisioner.Resources.Native;
 using IdentityModel;
