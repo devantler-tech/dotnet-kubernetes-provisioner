@@ -20,7 +20,7 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
     var (exitCode, _) = await K3dCLI.K3d.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new K3dException("Failed to delete K3d cluster.");
+      throw new KubernetesClusterProvisionerException("Failed to delete K3d cluster.");
     }
   }
 
@@ -44,7 +44,7 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
     var (exitCode, output) = await K3dCLI.K3d.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new K3dException("Failed to list K3d clusters.");
+      throw new KubernetesClusterProvisionerException("Failed to list K3d clusters.");
     }
     string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
     string[] clusterLines = [.. lines.Skip(1)];
@@ -65,7 +65,7 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
     var (exitCode, _) = await K3dCLI.K3d.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new K3dException("Failed to create K3d cluster.");
+      throw new KubernetesClusterProvisionerException("Failed to create K3d cluster.");
     }
   }
 
@@ -81,7 +81,7 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
     var (exitCode, _) = await K3dCLI.K3d.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new K3dException($"Failed to start k3d cluster.");
+      throw new KubernetesClusterProvisionerException($"Failed to start k3d cluster.");
     }
   }
 
@@ -97,7 +97,7 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
     var (exitCode, _) = await K3dCLI.K3d.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      throw new K3dException($"Failed to stop k3d cluster.");
+      throw new KubernetesClusterProvisionerException($"Failed to stop k3d cluster.");
     }
   }
 }
