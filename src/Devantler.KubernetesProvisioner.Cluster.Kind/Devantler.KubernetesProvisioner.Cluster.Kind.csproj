@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Devantler.KindCLI" Version="1.2.1" />
+    <PackageReference Include="Devantler.KindCLI" Version="1.2.2" />
     <PackageReference Include="Docker.DotNet" Version="3.125.15" />
     <PackageReference Include="KubernetesClient" Version="16.0.2" />
   </ItemGroup>
