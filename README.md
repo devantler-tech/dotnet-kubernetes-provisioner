@@ -65,6 +65,9 @@ dotnet add package Devantler.KubernetesProvisioner.Cluster.K3d
 # For provisioning a Kind cluster
 dotnet add package Devantler.KubernetesProvisioner.Cluster.Kind
 
+# For provisioning Cilium CNI
+dotnet add package Devantler.KubernetesProvisioner.CNI.Cilium
+
 # For provisioning Flux GitOps tooling
 dotnet add package Devantler.KubernetesProvisioner.GitOps.Flux
 
