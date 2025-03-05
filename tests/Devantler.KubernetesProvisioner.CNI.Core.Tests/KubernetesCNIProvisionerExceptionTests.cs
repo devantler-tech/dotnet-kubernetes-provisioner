@@ -9,7 +9,7 @@ public class KubernetesCNIProvisionerExceptionTests
   /// Tests the default constructor of the <see cref="KubernetesCNIProvisionerException"/> class.
   /// </summary>
   [Fact]
-  public void KubernetesCNIProvisonerExceptionTests_DefaultConstructor_ShouldCreateInstance()
+  public void KubernetesCNIProvisionerExceptionTests_DefaultConstructor_ShouldCreateInstance()
   {
     // Act
     var exception = new KubernetesCNIProvisionerException();

@@ -1,13 +1,12 @@
 using System.Runtime.InteropServices;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
-using Devantler.KubernetesProvisioner.CNI.Cilium;
 
-namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests;
+namespace Devantler.KubernetesProvisioner.CNI.Cilium.Tests.CiliumProvisionerTests;
 
 /// <summary>
-/// Tests for all methods in the <see cref="FluxProvisioner"/> class.
+/// Tests for all methods in the <see cref="CiliumProvisioner"/> class.
 /// </summary>
-[Collection("Flux")]
+[Collection("Cilium")]
 public class AllMethodsTests
 {
   readonly KindProvisioner _kindProvisioner = new();
@@ -17,13 +16,11 @@ public class AllMethodsTests
   /// </summary>
   /// <returns></returns>
   [Fact]
-  public async Task Flux_InstallsAndReconciles_KustomizationsAsync()
+  public async Task InstallAsync_InstallsCiliumToKindCluster()
   {
     //TODO: Support MacOS and Windows, when dind is supported in GitHub Actions Runners on those platforms
     if ((RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) && Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true")
-    {
       return;
-    }
 
     // Arrange
     string clusterName = "test-cilium-cluster";
