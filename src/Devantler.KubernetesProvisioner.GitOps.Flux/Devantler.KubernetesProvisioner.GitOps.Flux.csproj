@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Devantler.FluxCLI" Version="1.4.4" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="1.5.7" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="1.5.10" />
     <PackageReference Include="Devantler.Commons.Utils" Version="0.4.3" />
     <PackageReference Include="MedallionTopologicalSort" Version="1.0.0" />
   </ItemGroup>
