@@ -41,7 +41,7 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
   public async Task<IEnumerable<string>> ListAsync(CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "cluster", "list" };
-    var (exitCode, output) = await K3dCLI.K3d.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    var (exitCode, output) = await K3dCLI.K3d.RunAsync([.. args], silent: true, cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
       throw new KubernetesClusterProvisionerException("Failed to list K3d clusters.");

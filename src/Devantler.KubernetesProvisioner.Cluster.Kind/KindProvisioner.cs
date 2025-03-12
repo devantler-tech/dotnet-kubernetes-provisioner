@@ -40,7 +40,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   public async Task<IEnumerable<string>> ListAsync(CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "get", "clusters" };
-    var (exitCode, result) = await KindCLI.Kind.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    var (exitCode, result) = await KindCLI.Kind.RunAsync([.. args], silent: true, cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
       throw new KubernetesClusterProvisionerException("Failed to list Kind clusters.");
