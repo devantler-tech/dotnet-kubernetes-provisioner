@@ -25,7 +25,7 @@ public class AllMethodsTests
     // Arrange
     string clusterName = "test-cilium-cluster";
     string context = "kind-" + clusterName;
-    string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind-config.yaml");
+    string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind.yaml");
     var cancellationToken = new CancellationToken();
 
     // Act

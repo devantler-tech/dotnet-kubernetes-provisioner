@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="assets/kind-config.yaml" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="assets/kind.yaml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

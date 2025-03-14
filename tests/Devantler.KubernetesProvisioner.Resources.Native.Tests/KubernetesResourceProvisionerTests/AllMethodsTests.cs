@@ -27,7 +27,7 @@ public class AllMethodsTests
 
     // Arrange
     string clusterName = "test-native-cluster";
-    string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind-config.yaml");
+    string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind.yaml");
 
     // Act
     var createClusterException = await Record.ExceptionAsync(async () =>
