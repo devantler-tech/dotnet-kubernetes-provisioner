@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="assets/k3d-config.yaml" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="assets/k3d.yaml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
