@@ -10,5 +10,5 @@ permissions:
 
 jobs:
   publish:
-    uses: devantler-tech/.github/.github/workflows/dotnet-library-publish.yaml@main
+    uses: devantler-tech/workflows/.github/workflows/dotnet-library-publish.yaml@main
     secrets: inherit
