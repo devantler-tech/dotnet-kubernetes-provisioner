@@ -1,4 +1,5 @@
-﻿using Devantler.KubernetesProvisioner.Cluster.Core;
+﻿using CliWrap;
+using Devantler.KubernetesProvisioner.Cluster.Core;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using k8s;
@@ -32,8 +33,9 @@ public class KindProvisioner : IKubernetesClusterProvisioner
   /// <inheritdoc />
   public async Task<bool> ExistsAsync(string clusterName, CancellationToken cancellationToken = default)
   {
-    var clusterNames = await ListAsync(cancellationToken).ConfigureAwait(false);
-    return clusterNames.Contains(clusterName);
+    var args = new List<string> { "get", "clusters" };
+    var (exitCode, result) = await KindCLI.Kind.RunAsync([.. args], CommandResultValidation.None, silent: true, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return exitCode == 0 && result.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Contains(clusterName);
   }
 
   /// <inheritdoc />

@@ -33,7 +33,7 @@ public class K3dProvisioner : IKubernetesClusterProvisioner
       "get",
       clusterName
     };
-    var (exitCode, _) = await K3dCLI.K3d.RunAsync([.. args], CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+    var (exitCode, _) = await K3dCLI.K3d.RunAsync([.. args], CliWrap.CommandResultValidation.None, silent: true, cancellationToken: cancellationToken).ConfigureAwait(false);
     return exitCode == 0;
   }
 
