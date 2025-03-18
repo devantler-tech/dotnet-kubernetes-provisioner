@@ -13,12 +13,13 @@ public class CiliumProvisioner : IKubernetesCNIProvisioner
   /// </summary>
   /// <param name="context"></param>
   /// <param name="cancellationToken"></param>
-  public async Task InstallAsync(string? context = null, CancellationToken cancellationToken = default)
+  public async Task InstallAsync(string? kubeconfig, string? context = null, CancellationToken cancellationToken = default)
   {
     var installArgs = new List<string>
     {
       "install"
     };
+    installArgs.AddIfNotNull("--kubeconfig={0}", kubeconfig);
     installArgs.AddIfNotNull("--context={0}", context);
 
     await CiliumCLI.Cilium.RunAsync([.. installArgs], cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -27,6 +28,7 @@ public class CiliumProvisioner : IKubernetesCNIProvisioner
       "status",
       "--wait"
     };
+    waitArgs.AddIfNotNull("--kubeconfig={0}", kubeconfig);
     waitArgs.AddIfNotNull("--context={0}", context);
     await CiliumCLI.Cilium.RunAsync([.. waitArgs], cancellationToken: cancellationToken).ConfigureAwait(false);
   }
