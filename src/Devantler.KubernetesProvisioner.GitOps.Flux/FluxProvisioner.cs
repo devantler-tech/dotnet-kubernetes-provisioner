@@ -16,9 +16,13 @@ namespace Devantler.KubernetesProvisioner.GitOps.Flux;
 /// <remarks>
 /// Initializes a new instance of the <see cref="FluxProvisioner"/> class.
 /// </remarks>
+/// <param name="kubeconfig"></param>
 /// <param name="context"></param>
-public partial class FluxProvisioner(string? context = default) : IGitOpsProvisioner
+public partial class FluxProvisioner(string? kubeconfig = default, string? context = default) : IGitOpsProvisioner
 {
+  /// <inheritdoc/>
+  public string? Kubeconfig { get; set; } = kubeconfig;
+
   /// <inheritdoc/>
   public string? Context { get; set; } = context;
 
@@ -49,7 +53,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   /// <inheritdoc/>
   public async Task ReconcileAsync(string timeout = "5m", CancellationToken cancellationToken = default)
   {
-    using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Context);
+    using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Kubeconfig, Context);
     await ReconcileOCISourceAsync(timeout: timeout, cancellationToken: cancellationToken).ConfigureAwait(false);
     var kustomizationList = await kubernetesResourceProvisioner.ListNamespacedCustomObjectAsync<FluxKustomizationList>(
      "kustomize.toolkit.fluxcd.io",
@@ -85,6 +89,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
             "--with-source", "OCIRepository/flux-system",
             "--timeout", timeout
           };
+          args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
           args.AddIfNotNull("--context={0}", Context);
           var startTime = DateTime.UtcNow;
           while (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
@@ -122,6 +127,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   public async Task UninstallAsync(CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "uninstall", "--silent" };
+    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
     var (exitCode, output) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0 || output.Contains("connection refused", StringComparison.OrdinalIgnoreCase))
@@ -189,6 +195,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   public async Task InstallAsync(CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "install", };
+    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
@@ -227,6 +234,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       "--interval", interval,
       "--namespace", @namespace
     };
+    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
 
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -257,6 +265,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
       "--prune",
       "--wait"
     };
+    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
@@ -277,6 +286,7 @@ public partial class FluxProvisioner(string? context = default) : IGitOpsProvisi
   public async Task ReconcileOCISourceAsync(string name = "flux-system", string @namespace = "flux-system", string timeout = "5m", CancellationToken cancellationToken = default)
   {
     var args = new List<string> { "reconcile", "source", "oci", name, "--namespace", @namespace, "--timeout", timeout };
+    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)

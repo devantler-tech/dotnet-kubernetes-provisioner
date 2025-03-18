@@ -6,6 +6,11 @@
 public interface IGitOpsProvisioner
 {
   /// <summary>
+  /// The Kubernetes kubeconfig.
+  /// </summary>
+  string? Kubeconfig { get; set; }
+
+  /// <summary>
   /// The Kubernetes context.
   /// </summary>
   string? Context { get; set; }
