@@ -11,6 +11,7 @@ public class CiliumProvisioner : IKubernetesCNIProvisioner
   /// <summary>
   /// Installs Cilium as a CNI.
   /// </summary>
+  /// <param name="kubeconfig"></param>
   /// <param name="context"></param>
   /// <param name="cancellationToken"></param>
   public async Task InstallAsync(string? kubeconfig, string? context = null, CancellationToken cancellationToken = default)
