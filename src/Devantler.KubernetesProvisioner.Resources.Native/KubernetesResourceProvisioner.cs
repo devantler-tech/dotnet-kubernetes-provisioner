@@ -8,12 +8,13 @@ namespace Devantler.KubernetesProvisioner.Resources.Native;
 /// <remarks>
 /// Initializes a new instance of the <see cref="KubernetesResourceProvisioner"/> class.
 /// </remarks>
+/// <param name="kubeconfig"></param>
 /// <param name="context"></param>
-public sealed class KubernetesResourceProvisioner(string? context = default) : Kubernetes(BuildConfig(context))
+public sealed class KubernetesResourceProvisioner(string? kubeconfig = default, string? context = default) : Kubernetes(BuildConfig(kubeconfig, context))
 {
-  static KubernetesClientConfiguration BuildConfig(string? context)
+  static KubernetesClientConfiguration BuildConfig(string? kubeconfig, string? context)
   {
-    var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
+    var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig(kubeconfig);
     var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context);
     return config;
   }
