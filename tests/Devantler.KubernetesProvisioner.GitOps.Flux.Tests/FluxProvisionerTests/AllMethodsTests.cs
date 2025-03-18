@@ -1,5 +1,5 @@
-using Devantler.ContainerEngineProvisioner.Docker;
 using System.Runtime.InteropServices;
+using Devantler.ContainerEngineProvisioner.Docker;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
 
 namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests;
@@ -30,7 +30,7 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind.yaml");
     string manifestsDirectoryPath = Path.Combine(AppContext.BaseDirectory, "assets/k8s");
     string kustomizationDirectoryPath = $"clusters/{clusterName}/flux-system";
-    var fluxProvisioner = new FluxProvisioner(context);
+    var fluxProvisioner = new FluxProvisioner(context: context);
     var dockerProvisioner = new DockerProvisioner();
     var cancellationToken = new CancellationToken();
 
