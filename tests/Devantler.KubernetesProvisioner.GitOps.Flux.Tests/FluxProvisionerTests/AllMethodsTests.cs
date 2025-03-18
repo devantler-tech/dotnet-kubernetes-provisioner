@@ -26,11 +26,12 @@ public class AllMethodsTests
 
     // Arrange
     string clusterName = "test-flux-cluster";
+    string kubeconfig = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".kube", "config");
     string context = "kind-" + clusterName;
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind.yaml");
     string manifestsDirectoryPath = Path.Combine(AppContext.BaseDirectory, "assets/k8s");
     string kustomizationDirectoryPath = $"clusters/{clusterName}/flux-system";
-    var fluxProvisioner = new FluxProvisioner(context: context);
+    var fluxProvisioner = new FluxProvisioner(kubeconfig, context);
     var dockerProvisioner = new DockerProvisioner();
     var cancellationToken = new CancellationToken();
 
