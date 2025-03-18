@@ -23,8 +23,9 @@ public class AllMethodsTests
 
     // Arrange
     string clusterName = "test-cilium-cluster";
+    string kubeconfig = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".kube", "config");
     string context = "kind-" + clusterName;
-    CiliumProvisioner ciliumProvisioner = new(context: context);
+    CiliumProvisioner ciliumProvisioner = new(kubeconfig, context);
 
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind.yaml");
     var cancellationToken = new CancellationToken();
