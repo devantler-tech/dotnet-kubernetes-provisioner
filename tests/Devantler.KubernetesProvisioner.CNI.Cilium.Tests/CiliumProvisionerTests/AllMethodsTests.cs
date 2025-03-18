@@ -10,7 +10,6 @@ namespace Devantler.KubernetesProvisioner.CNI.Cilium.Tests.CiliumProvisionerTest
 public class AllMethodsTests
 {
   readonly KindProvisioner _kindProvisioner = new();
-  readonly CiliumProvisioner _ciliumProvisioner = new();
   /// <summary>
   /// Test to verify that flux installs and reconciles kustomizations.
   /// </summary>
@@ -25,13 +24,15 @@ public class AllMethodsTests
     // Arrange
     string clusterName = "test-cilium-cluster";
     string context = "kind-" + clusterName;
+    CiliumProvisioner ciliumProvisioner = new(context: "kind-" + clusterName);
+
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind.yaml");
     var cancellationToken = new CancellationToken();
 
     // Act
     await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
     await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken);
-    await _ciliumProvisioner.InstallAsync(context, cancellationToken);
+    await ciliumProvisioner.InstallAsync(cancellationToken);
 
     // Cleanup
     await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);

@@ -6,22 +6,26 @@ namespace Devantler.KubernetesProvisioner.CNI.Cilium;
 /// <summary>
 /// A Cilium CNI provisioner.
 /// </summary>
-public class CiliumProvisioner : IKubernetesCNIProvisioner
+public class CiliumProvisioner(string? kubeconfig = default, string? context = default) : IKubernetesCNIProvisioner
 {
+  /// <inheritdoc/>
+  public string? Kubeconfig { get; set; } = kubeconfig;
+
+  /// <inheritdoc/>
+  public string? Context { get; set; } = context;
+
   /// <summary>
   /// Installs Cilium as a CNI.
   /// </summary>
-  /// <param name="kubeconfig"></param>
-  /// <param name="context"></param>
   /// <param name="cancellationToken"></param>
-  public async Task InstallAsync(string? kubeconfig, string? context = null, CancellationToken cancellationToken = default)
+  public async Task InstallAsync(CancellationToken cancellationToken = default)
   {
     var installArgs = new List<string>
     {
       "install"
     };
-    installArgs.AddIfNotNull("--kubeconfig={0}", kubeconfig);
-    installArgs.AddIfNotNull("--context={0}", context);
+    installArgs.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+    installArgs.AddIfNotNull("--context={0}", Context);
 
     await CiliumCLI.Cilium.RunAsync([.. installArgs], cancellationToken: cancellationToken).ConfigureAwait(false);
     var waitArgs = new List<string>
@@ -29,8 +33,8 @@ public class CiliumProvisioner : IKubernetesCNIProvisioner
       "status",
       "--wait"
     };
-    waitArgs.AddIfNotNull("--kubeconfig={0}", kubeconfig);
-    waitArgs.AddIfNotNull("--context={0}", context);
+    waitArgs.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+    waitArgs.AddIfNotNull("--context={0}", Context);
     await CiliumCLI.Cilium.RunAsync([.. waitArgs], cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

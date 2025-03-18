@@ -6,11 +6,19 @@
 public interface IKubernetesCNIProvisioner
 {
   /// <summary>
+  /// The path to the kubeconfig file.
+  /// </summary>
+  public string? Kubeconfig { get; set; }
+
+  /// <summary>
+  /// The context to use.
+  /// </summary>
+  public string? Context { get; set; }
+
+  /// <summary>
   /// Installs a CNI.
   /// </summary>
-  /// <param name="kubeconfig"></param>
-  /// <param name="context"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  Task InstallAsync(string? kubeconfig = default, string? context = default, CancellationToken cancellationToken = default);
+  Task InstallAsync(CancellationToken cancellationToken = default);
 }
