@@ -55,7 +55,7 @@ public partial class FluxProvisioner(string? kubeconfig = default, string? conte
   {
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Kubeconfig, Context);
     var kustomizationList = await kubernetesResourceProvisioner.ListNamespacedCustomObjectAsync<FluxKustomizationList>(
-     "kustomize.toolkit.fluxcd.io",
+      "kustomize.toolkit.fluxcd.io",
       "v1", "flux-system",
       "kustomizations", cancellationToken: cancellationToken).ConfigureAwait(false);
 
