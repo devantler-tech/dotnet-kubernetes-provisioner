@@ -54,7 +54,6 @@ public partial class FluxProvisioner(string? kubeconfig = default, string? conte
   public async Task ReconcileAsync(string timeout = "5m", CancellationToken cancellationToken = default)
   {
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Kubeconfig, Context);
-    await ReconcileOCISourceAsync(timeout: timeout, cancellationToken: cancellationToken).ConfigureAwait(false);
     var kustomizationList = await kubernetesResourceProvisioner.ListNamespacedCustomObjectAsync<FluxKustomizationList>(
      "kustomize.toolkit.fluxcd.io",
       "v1", "flux-system",
@@ -86,7 +85,7 @@ public partial class FluxProvisioner(string? kubeconfig = default, string? conte
             "kustomization",
             kustomizationTuple.Name,
             "--namespace", "flux-system",
-            "--with-source", "OCIRepository/flux-system",
+            "--with-source",
             "--timeout", timeout
           };
           args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
@@ -271,27 +270,6 @@ public partial class FluxProvisioner(string? kubeconfig = default, string? conte
     if (exitCode != 0)
     {
       throw new KubernetesGitOpsProvisionerException($"Failed to create Kustomization");
-    }
-  }
-
-  /// <summary>
-  /// Reconcile an OCI source.
-  /// </summary>
-  /// <param name="name"></param>
-  /// <param name="namespace"></param>
-  /// <param name="timeout"></param>
-  /// <param name="cancellationToken"></param>
-  /// <returns></returns>
-  /// <exception cref="KubernetesGitOpsProvisionerException"></exception>
-  public async Task ReconcileOCISourceAsync(string name = "flux-system", string @namespace = "flux-system", string timeout = "5m", CancellationToken cancellationToken = default)
-  {
-    var args = new List<string> { "reconcile", "source", "oci", name, "--namespace", @namespace, "--timeout", timeout };
-    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
-    args.AddIfNotNull("--context={0}", Context);
-    var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
-    if (exitCode != 0)
-    {
-      throw new KubernetesGitOpsProvisionerException($"Failed to reconcile OCI source");
     }
   }
 }
