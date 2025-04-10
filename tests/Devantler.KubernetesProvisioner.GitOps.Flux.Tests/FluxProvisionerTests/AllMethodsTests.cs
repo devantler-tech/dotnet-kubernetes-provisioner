@@ -47,7 +47,7 @@ public class AllMethodsTests
       ociUri = new Uri($"oci://172.17.0.1:5555/{clusterName}");
     }
 
-    await fluxProvisioner.BootstrapAsync(ociUri, kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
+    await fluxProvisioner.InstallAsync(ociUri, kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
     await fluxProvisioner.ReconcileAsync(cancellationToken: cancellationToken);
     await fluxProvisioner.UninstallAsync(cancellationToken);
 

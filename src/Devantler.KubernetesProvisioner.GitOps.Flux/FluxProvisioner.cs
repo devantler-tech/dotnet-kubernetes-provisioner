@@ -44,7 +44,7 @@ public partial class FluxProvisioner(string? kubeconfig = default, string? conte
   /// <param name="insecure"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public async Task BootstrapAsync(Uri ociSourceUrl, string kustomizationDirectory, bool insecure = false, CancellationToken cancellationToken = default)
+  public async Task InstallAsync(Uri ociSourceUrl, string kustomizationDirectory, bool insecure = false, CancellationToken cancellationToken = default)
   {
     await InstallAsync(cancellationToken).ConfigureAwait(false);
     await CreateOCISourceAsync(ociSourceUrl, insecure: insecure, interval: "30s", cancellationToken: cancellationToken).ConfigureAwait(false);

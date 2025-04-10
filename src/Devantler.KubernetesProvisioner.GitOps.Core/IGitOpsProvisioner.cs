@@ -29,7 +29,7 @@ public interface IGitOpsProvisioner
   /// <summary>
   /// Bootstrap the GitOps tooling on the Kubernetes cluster.
   /// </summary>
-  Task BootstrapAsync(Uri ociSourceUrl, string kustomizationDirectory, bool insecure = false, CancellationToken cancellationToken = default);
+  Task InstallAsync(Uri ociSourceUrl, string kustomizationDirectory, bool insecure = false, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Uninstall the GitOps tooling from the Kubernetes cluster.
