@@ -34,8 +34,7 @@ public class AllMethodsTests
     // Act
     await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
     await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken);
-    await kubectlProvisioner.ApplyAsync(kustomizationDirectoryPath, cancellationToken);
-    await kubectlProvisioner.WaitAsync(cancellationToken: cancellationToken);
+    await kubectlProvisioner.ApplyAsync(kustomizationDirectoryPath, cancellationToken: cancellationToken);
 
     // Cleanup
     await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);

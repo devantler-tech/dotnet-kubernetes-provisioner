@@ -19,13 +19,7 @@ public interface IDeploymentToolProvisioner
   /// Apply a kustomization to the Kubernetes cluster.
   /// </summary>
   /// <param name="kustomizationDirectory"></param>
-  /// <param name="cancellationToken"></param>
-  Task ApplyAsync(string kustomizationDirectory, CancellationToken cancellationToken = default);
-
-  /// <summary>
-  /// Wait for the resources to be ready.
-  /// </summary>
   /// <param name="timeout"></param>
   /// <param name="cancellationToken"></param>
-  Task WaitAsync(string timeout = "5m", CancellationToken cancellationToken = default);
+  Task ApplyAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default);
 }
