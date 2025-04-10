@@ -31,7 +31,7 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind.yaml");
     string manifestsDirectoryPath = Path.Combine(AppContext.BaseDirectory, "assets/k8s");
     string kustomizationDirectoryPath = $"clusters/{clusterName}/flux-system";
-    var fluxProvisioner = new FluxProvisioner(kubeconfig, context);
+    var fluxProvisioner = new FluxProvisioner(new Uri($"oci://localhost:5555/{clusterName}"), kubeconfig: kubeconfig, context: context);
     var dockerProvisioner = new DockerProvisioner();
     var cancellationToken = new CancellationToken();
 
@@ -39,7 +39,7 @@ public class AllMethodsTests
     await dockerProvisioner.CreateRegistryAsync("ksail-registry", 5555, cancellationToken: cancellationToken);
     await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
     await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken);
-    await fluxProvisioner.PushManifestsAsync(new Uri($"oci://localhost:5555/{clusterName}"), manifestsDirectoryPath, cancellationToken: cancellationToken);
+    await fluxProvisioner.PushAsync(manifestsDirectoryPath, cancellationToken: cancellationToken);
     var ociUri = new Uri($"oci://host.docker.internal:5555/{clusterName}");
     // Fix for Kind on Linux, that doesn't support host.docker.internal via --add-host
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
