@@ -16,9 +16,12 @@ namespace Devantler.KubernetesProvisioner.GitOps.Flux;
 /// <remarks>
 /// Initializes a new instance of the <see cref="FluxProvisioner"/> class.
 /// </remarks>
+/// <param name="registryUri"></param>
+/// <param name="registryUserName"></param>
+/// <param name="registryPassword"></param>
 /// <param name="kubeconfig"></param>
 /// <param name="context"></param>
-public partial class FluxProvisioner(string? kubeconfig = default, string? context = default) : IGitOpsProvisioner
+public partial class FluxProvisioner(Uri registryUri, string? registryUserName = default, string? registryPassword = default, string? kubeconfig = default, string? context = default) : IGitOpsProvisioner
 {
   /// <inheritdoc/>
   public string? Kubeconfig { get; set; } = kubeconfig;
@@ -27,13 +30,22 @@ public partial class FluxProvisioner(string? kubeconfig = default, string? conte
   public string? Context { get; set; } = context;
 
   /// <inheritdoc/>
-  public async Task PushManifestsAsync(Uri registryUri, string manifestsDirectory, string? userName = null, string? password = null, CancellationToken cancellationToken = default)
+  public Uri RegistryUri { get; set; } = registryUri;
+
+  /// <inheritdoc/>
+  public string? RegistryUserName { get; set; } = registryUserName;
+
+  /// <inheritdoc/>
+  public string? RegistryPassword { get; set; } = registryPassword;
+
+  /// <inheritdoc/>
+  public async Task PushAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
     long currentTimeEpoch = DateTime.Now.ToEpochTime();
     string revision = currentTimeEpoch.ToString(CultureInfo.InvariantCulture);
 
-    await PushArtifactAsync(registryUri, manifestsDirectory, revision, cancellationToken).ConfigureAwait(false);
-    await TagArtifactAsync(registryUri, revision, cancellationToken).ConfigureAwait(false);
+    await PushArtifactAsync(RegistryUri, kustomizationDirectory, revision, cancellationToken).ConfigureAwait(false);
+    await TagArtifactAsync(RegistryUri, revision, cancellationToken).ConfigureAwait(false);
   }
 
   /// <summary>
@@ -272,4 +284,6 @@ public partial class FluxProvisioner(string? kubeconfig = default, string? conte
       throw new KubernetesGitOpsProvisionerException($"Failed to create Kustomization");
     }
   }
+
+
 }

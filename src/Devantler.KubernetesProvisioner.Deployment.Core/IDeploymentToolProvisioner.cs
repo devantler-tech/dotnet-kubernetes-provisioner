@@ -21,5 +21,5 @@ public interface IDeploymentToolProvisioner
   /// <param name="kustomizationDirectory"></param>
   /// <param name="timeout"></param>
   /// <param name="cancellationToken"></param>
-  Task ApplyAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default);
+  Task PushAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default);
 }

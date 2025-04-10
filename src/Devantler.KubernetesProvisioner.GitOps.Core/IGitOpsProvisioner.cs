@@ -1,30 +1,26 @@
-﻿namespace Devantler.KubernetesProvisioner.GitOps.Core;
+﻿using Devantler.KubernetesProvisioner.Deployment.Core;
+
+namespace Devantler.KubernetesProvisioner.GitOps.Core;
 
 /// <summary>
 /// A Kubernetes GitOps provisioner.
 /// </summary>
-public interface IGitOpsProvisioner
+public interface IGitOpsProvisioner : IDeploymentToolProvisioner
 {
   /// <summary>
-  /// The Kubernetes kubeconfig.
+  /// The OCI registry URI to push the manifests to.
   /// </summary>
-  string? Kubeconfig { get; set; }
+  Uri RegistryUri { get; set; }
 
   /// <summary>
-  /// The Kubernetes context.
+  /// The OCI registry username.
   /// </summary>
-  string? Context { get; set; }
+  string? RegistryUserName { get; set; }
 
   /// <summary>
-  /// Push manifests to an OCI registry
+  /// The OCI registry password.
   /// </summary>
-  /// <param name="registryUri"></param>
-  /// <param name="manifestsDirectory"></param>
-  /// <param name="userName"></param>
-  /// <param name="password"></param>
-  /// <param name="cancellationToken"></param>
-  /// <returns></returns>
-  Task PushManifestsAsync(Uri registryUri, string manifestsDirectory, string? userName = default, string? password = default, CancellationToken cancellationToken = default);
+  string? RegistryPassword { get; set; }
 
   /// <summary>
   /// Bootstrap the GitOps tooling on the Kubernetes cluster.

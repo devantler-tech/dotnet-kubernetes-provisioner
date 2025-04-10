@@ -23,7 +23,7 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
   /// <param name="timeout"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public async Task ApplyAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
+  public async Task PushAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
     var args = new List<string>
     {
