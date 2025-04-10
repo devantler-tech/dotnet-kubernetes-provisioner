@@ -20,6 +20,12 @@ public interface IDeploymentToolProvisioner
   /// </summary>
   /// <param name="kustomizationDirectory"></param>
   /// <param name="cancellationToken"></param>
-  /// <returns></returns>
   Task ApplyAsync(string kustomizationDirectory, CancellationToken cancellationToken = default);
+
+  /// <summary>
+  /// Wait for the resources to be ready.
+  /// </summary>
+  /// <param name="timeout"></param>
+  /// <param name="cancellationToken"></param>
+  Task WaitAsync(string timeout = "5m", CancellationToken cancellationToken = default);
 }
