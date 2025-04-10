@@ -20,6 +20,8 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
 │   ├── Devantler.KubernetesProvisioner.Cluster.Core
 │   ├── Devantler.KubernetesProvisioner.Cluster.K3d
 │   ├── Devantler.KubernetesProvisioner.Cluster.Kind
+│   ├── Devantler.KubernetesProvisioner.Deployment.Core
+│   ├── Devantler.KubernetesProvisioner.Deployment.Kubectl
 │   ├── Devantler.KubernetesProvisioner.GitOps.Core
 │   ├── Devantler.KubernetesProvisioner.GitOps.Flux
 │   └── Devantler.KubernetesProvisioner.Resources.Native
@@ -35,6 +37,11 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
     ├── Devantler.KubernetesProvisioner.Cluster.Kind.Tests
     │   ├── KindProvisionerTests
     │   └── assets
+    ├── Devantler.KubernetesProvisioner.Deployment.Core.Tests
+    ├── Devantler.KubernetesProvisioner.Deployment.Kubectl.Tests
+    │   ├── KubectlProvisionerTests
+    │   └── assets
+    │       └── k8s
     ├── Devantler.KubernetesProvisioner.GitOps.Core.Tests
     ├── Devantler.KubernetesProvisioner.GitOps.Flux.Tests
     │   ├── FluxProvisionerTests
@@ -50,7 +57,7 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
         ├── KubernetesResourceProvisionerTests
         └── assets
 
-38 directories
+45 directories
 ```
 <!-- readme-tree end -->
 
