@@ -1,5 +1,6 @@
 using Devantler.Commons.Extensions;
 using Devantler.KubernetesProvisioner.Deployment.Core;
+using Devantler.KubernetesProvisioner.GitOps.Core;
 
 namespace Devantler.KubernetesProvisioner.Deployment.Kubectl;
 
@@ -36,8 +37,7 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
 
-    await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
-
+    await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
     args = [
       "rollout",
       "status",
@@ -47,6 +47,6 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     ];
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
-    await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }
