@@ -37,7 +37,10 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
 
-    await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+    var (exitCode, result) = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+    if (exitCode != 0 && !result.Contains("error: no objects passed to apply", StringComparison.Ordinal)) {
+      throw new KubernetesDeploymentToolProvisionerException(result);
+    }
     args = [
       "rollout",
       "status",
