@@ -32,6 +32,8 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
       "-k",
       kustomizationDirectory,
       $"--timeout={timeout}",
+      "--prune",
+      "--all",
       "--wait=true",
     };
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
