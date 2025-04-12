@@ -31,6 +31,7 @@ public class CiliumProvisioner(string? kubeconfig = default, string? context = d
     var waitArgs = new List<string>
     {
       "status",
+      "--interactive", "false",
       "--wait"
     };
     waitArgs.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
