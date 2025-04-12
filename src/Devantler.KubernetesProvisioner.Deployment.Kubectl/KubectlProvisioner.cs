@@ -49,7 +49,7 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
     _ = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
-    
+
     args = [
       "apply",
       "-k", kustomizationDirectory,
