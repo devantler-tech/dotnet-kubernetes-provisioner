@@ -31,7 +31,7 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
       "apply",
       "-k",
       kustomizationDirectory,
-      "-l=provider=ksail"
+      "-l=provider=ksail",
       $"--timeout={timeout}",
       "--prune",
       "--wait=true",
