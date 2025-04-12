@@ -28,12 +28,11 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     var args = new List<string>
     {
       "apply",
-      "-k",
-      kustomizationDirectory,
-      "-l=provider=ksail",
-      $"--timeout={timeout}",
+      "-k", kustomizationDirectory,
       "--prune",
+      "-l=provider=ksail",
       "--wait=true",
+      $"--timeout={timeout}"
     };
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
@@ -44,10 +43,8 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     }
     args =
     [
-      "label",
-      "-k",
-      kustomizationDirectory,
-      "provider=ksail",
+      "label", "provider=ksail",
+      "-k", kustomizationDirectory,
       "--overwrite"
     ];
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
@@ -57,8 +54,7 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     args = [
       "rollout",
       "status",
-      "-k",
-      kustomizationDirectory,
+      "-k", kustomizationDirectory,
       "-l=provider=ksail",
       $"--timeout={timeout}",
     ];
