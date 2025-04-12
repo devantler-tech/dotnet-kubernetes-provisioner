@@ -15,5 +15,3 @@ public class FluxKustomizationList
   public Collection<FluxKustomization> Items { get; set; } = [];
 #pragma warning restore CA2227 // Collection properties should be read only
 }
-
-
