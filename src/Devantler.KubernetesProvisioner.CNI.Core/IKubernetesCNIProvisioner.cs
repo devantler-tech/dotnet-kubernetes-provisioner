@@ -1,4 +1,4 @@
-﻿namespace Devantler.KubernetesProvisioner.Cluster.Core;
+﻿namespace Devantler.KubernetesProvisioner.CNI.Core;
 
 /// <summary>
 /// A Kubernetes CNI provisioner.
@@ -8,12 +8,12 @@ public interface IKubernetesCNIProvisioner
   /// <summary>
   /// The path to the kubeconfig file.
   /// </summary>
-  public string? Kubeconfig { get; set; }
+  string? Kubeconfig { get; set; }
 
   /// <summary>
   /// The context to use.
   /// </summary>
-  public string? Context { get; set; }
+  string? Context { get; set; }
 
   /// <summary>
   /// Installs a CNI.

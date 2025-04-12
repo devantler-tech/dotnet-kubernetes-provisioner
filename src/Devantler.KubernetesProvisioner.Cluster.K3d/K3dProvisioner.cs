@@ -1,5 +1,4 @@
-﻿using Devantler.K3dCLI;
-using Devantler.KubernetesProvisioner.Cluster.Core;
+﻿using Devantler.KubernetesProvisioner.Cluster.Core;
 
 namespace Devantler.KubernetesProvisioner.Cluster.K3d;
 

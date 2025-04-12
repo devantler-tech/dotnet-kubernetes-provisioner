@@ -1,6 +1,5 @@
 using Devantler.Commons.Extensions;
 using Devantler.KubernetesProvisioner.Deployment.Core;
-using Devantler.KubernetesProvisioner.GitOps.Core;
 
 namespace Devantler.KubernetesProvisioner.Deployment.Kubectl;
 
@@ -39,20 +38,21 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
     var (exitCode, result) = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
-    if (exitCode != 0 && !result.Contains("error: no objects passed to apply", StringComparison.Ordinal)) {
+    if (exitCode != 0 && !result.Contains("error: no objects passed to apply", StringComparison.Ordinal))
+    {
       throw new KubernetesDeploymentToolProvisionerException(result);
     }
-    args = new List<string>
-    {
+    args =
+    [
       "label",
       "-k",
       kustomizationDirectory,
       "provider=ksail",
       "--overwrite"
-    };
+    ];
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
-    await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+    _ = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     args = [
       "rollout",
@@ -64,6 +64,6 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     ];
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
-    await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+    _ = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

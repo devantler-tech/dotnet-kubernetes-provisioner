@@ -1,3 +1,5 @@
+using Devantler.KubernetesProvisioner.Deployment.Core;
+
 namespace Devantler.KubernetesProvisioner.GitOps.Core.Tests;
 
 /// <summary>

@@ -1,5 +1,5 @@
 ﻿using Devantler.Commons.Extensions;
-using Devantler.KubernetesProvisioner.Cluster.Core;
+using Devantler.KubernetesProvisioner.CNI.Core;
 
 namespace Devantler.KubernetesProvisioner.CNI.Cilium;
 

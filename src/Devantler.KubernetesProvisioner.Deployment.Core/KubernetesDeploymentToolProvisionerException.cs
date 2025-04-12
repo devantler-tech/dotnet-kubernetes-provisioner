@@ -1,4 +1,4 @@
-namespace Devantler.KubernetesProvisioner.GitOps.Core;
+namespace Devantler.KubernetesProvisioner.Deployment.Core;
 
 /// <summary>
 /// Represents an exception that is thrown when an error occurs in a Kubernetes deployment tool provisioner.
