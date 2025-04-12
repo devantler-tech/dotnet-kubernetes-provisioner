@@ -7,7 +7,7 @@ namespace Devantler.KubernetesProvisioner.CNI.Cilium.Tests.CiliumProvisionerTest
 /// Tests for all methods in the <see cref="CiliumProvisioner"/> class.
 /// </summary>
 [Collection("Cilium")]
-internal class AllMethodsTests
+public class AllMethodsTests
 {
   readonly KindProvisioner _kindProvisioner = new();
   /// <summary>
@@ -31,11 +31,11 @@ internal class AllMethodsTests
     var cancellationToken = new CancellationToken();
 
     // Act
-    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken).ConfigureAwait(false);
-    await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken).ConfigureAwait(false);
-    await ciliumProvisioner.InstallAsync(cancellationToken).ConfigureAwait(false);
+    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
+    await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken);
+    await ciliumProvisioner.InstallAsync(cancellationToken);
 
     // Cleanup
-    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken).ConfigureAwait(false);
+    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
   }
 }

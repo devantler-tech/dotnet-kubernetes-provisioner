@@ -3,7 +3,7 @@ namespace Devantler.KubernetesProvisioner.Cluster.Core.Tests;
 /// <summary>
 /// Tests for the <see cref="KubernetesClusterProvisionerException"/> class.
 /// </summary>
-internal class KubernetesClusterProvisionerExceptionTests
+public class KubernetesClusterProvisionerExceptionTests
 {
   /// <summary>
   /// Tests the default constructor of the <see cref="KubernetesClusterProvisionerException"/> class.

@@ -7,7 +7,7 @@ namespace Devantler.KubernetesProvisioner.Deployment.Kubectl.Tests.KubectlProvis
 /// Tests for all methods in the <see cref="KubectlProvisioner"/> class.
 /// </summary>
 [Collection("Flux")]
-internal class AllMethodsTests
+public class AllMethodsTests
 {
   readonly KindProvisioner _kindProvisioner = new();
   /// <summary>
@@ -31,11 +31,11 @@ internal class AllMethodsTests
     var cancellationToken = new CancellationToken();
 
     // Act
-    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken).ConfigureAwait(false);
-    await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken).ConfigureAwait(false);
-    await kubectlProvisioner.PushAsync(kustomizationDirectoryPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
+    await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken);
+    await kubectlProvisioner.PushAsync(kustomizationDirectoryPath, cancellationToken: cancellationToken);
 
     // Cleanup
-    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken).ConfigureAwait(false);
+    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
   }
 }

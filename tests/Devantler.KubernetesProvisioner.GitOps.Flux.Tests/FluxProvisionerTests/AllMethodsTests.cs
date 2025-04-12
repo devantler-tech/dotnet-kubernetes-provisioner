@@ -8,7 +8,7 @@ namespace Devantler.KubernetesProvisioner.GitOps.Flux.Tests.FluxProvisionerTests
 /// Tests for all methods in the <see cref="FluxProvisioner"/> class.
 /// </summary>
 [Collection("Flux")]
-internal class AllMethodsTests
+public class AllMethodsTests
 {
   readonly KindProvisioner _kindProvisioner = new();
   /// <summary>
@@ -36,10 +36,10 @@ internal class AllMethodsTests
     var cancellationToken = new CancellationToken();
 
     // Act
-    await dockerProvisioner.CreateRegistryAsync("ksail-registry", 5555, cancellationToken: cancellationToken).ConfigureAwait(false);
-    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken).ConfigureAwait(false);
-    await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken).ConfigureAwait(false);
-    await fluxProvisioner.PushAsync(manifestsDirectoryPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await dockerProvisioner.CreateRegistryAsync("ksail-registry", 5555, cancellationToken: cancellationToken);
+    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
+    await _kindProvisioner.CreateAsync(clusterName, configPath, cancellationToken);
+    await fluxProvisioner.PushAsync(manifestsDirectoryPath, cancellationToken: cancellationToken);
     var ociUri = new Uri($"oci://host.docker.internal:5555/{clusterName}");
     // Fix for Kind on Linux, that doesn't support host.docker.internal via --add-host
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -47,12 +47,12 @@ internal class AllMethodsTests
       ociUri = new Uri($"oci://172.17.0.1:5555/{clusterName}");
     }
 
-    await fluxProvisioner.InstallAsync(ociUri, kustomizationDirectoryPath, true, cancellationToken: cancellationToken).ConfigureAwait(false);
-    await fluxProvisioner.ReconcileAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-    await fluxProvisioner.UninstallAsync(cancellationToken).ConfigureAwait(false);
+    await fluxProvisioner.InstallAsync(ociUri, kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
+    await fluxProvisioner.ReconcileAsync(cancellationToken: cancellationToken);
+    await fluxProvisioner.UninstallAsync(cancellationToken);
 
     // Cleanup
-    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken).ConfigureAwait(false);
-    await dockerProvisioner.DeleteRegistryAsync("ksail-registry", cancellationToken).ConfigureAwait(false);
+    await _kindProvisioner.DeleteAsync(clusterName, cancellationToken);
+    await dockerProvisioner.DeleteRegistryAsync("ksail-registry", cancellationToken);
   }
 }

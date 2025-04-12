@@ -3,7 +3,7 @@ namespace Devantler.KubernetesProvisioner.GitOps.Core.Tests;
 /// <summary>
 /// Tests for the <see cref="KubernetesGitOpsProvisionerException"/> class.
 /// </summary>
-internal class KubernetesGitOpsProvisionerExceptionTests
+public class KubernetesGitOpsProvisionerExceptionTests
 {
   /// <summary>
   /// Tests the default constructor of the <see cref="KubernetesGitOpsProvisionerException"/> class.
