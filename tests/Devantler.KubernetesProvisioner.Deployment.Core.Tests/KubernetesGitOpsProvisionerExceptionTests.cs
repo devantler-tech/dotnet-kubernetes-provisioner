@@ -1,6 +1,4 @@
-using Devantler.KubernetesProvisioner.Deployment.Core;
-
-namespace Devantler.KubernetesProvisioner.GitOps.Core.Tests;
+namespace Devantler.KubernetesProvisioner.Deployment.Core.Tests;
 
 /// <summary>
 /// Tests for the <see cref="KubernetesDeploymentToolProvisionerException"/> class.

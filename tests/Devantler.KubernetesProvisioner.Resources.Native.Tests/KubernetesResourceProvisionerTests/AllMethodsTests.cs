@@ -34,8 +34,8 @@ public class AllMethodsTests
     {
       await _kindProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false);
     });
-    var kubeconfig = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".kube", "config");
-    var context = $"kind-{clusterName}";
+    string kubeconfig = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".kube", "config");
+    string context = $"kind-{clusterName}";
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(kubeconfig, context);
     var @namespace = new V1Namespace
     {
