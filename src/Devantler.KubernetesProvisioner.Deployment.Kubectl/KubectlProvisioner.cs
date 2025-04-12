@@ -50,15 +50,14 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     args.AddIfNotNull("--context={0}", Context);
     _ = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
     
-    args = new List<string>
-    {
+    args = [
       "apply",
       "-k", kustomizationDirectory,
       "--prune",
       "-l=provider=ksail",
       "--wait=true",
       $"--timeout={timeout}"
-    };
+    ];
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
     (exitCode, result) = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
