@@ -9,7 +9,7 @@ namespace Devantler.KubernetesProvisioner.Resources.Native.Tests.KubernetesResou
 /// Tests for all methods in the <see cref="KubernetesResourceProvisioner"/> class.
 /// </summary>
 [Collection("Native")]
-public class AllMethodsTests
+internal class AllMethodsTests
 {
   readonly KindProvisioner _kindProvisioner = new();
   /// <summary>
@@ -33,7 +33,7 @@ public class AllMethodsTests
     var createClusterException = await Record.ExceptionAsync(async () =>
     {
       await _kindProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false);
-    });
+    }).ConfigureAwait(false);
     string kubeconfig = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".kube", "config");
     string context = $"kind-{clusterName}";
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(kubeconfig, context);
@@ -46,12 +46,12 @@ public class AllMethodsTests
         Name = "test-namespace"
       }
     };
-    var createdNamespaceException = await Record.ExceptionAsync(async () => await kubernetesResourceProvisioner.CreateNamespaceAsync(@namespace).ConfigureAwait(false));
+    var createdNamespaceException = await Record.ExceptionAsync(async () => await kubernetesResourceProvisioner.CreateNamespaceAsync(@namespace).ConfigureAwait(false)).ConfigureAwait(false);
     // Assert
     Assert.Null(createClusterException);
     Assert.Null(createdNamespaceException);
 
     // Cleanup
-    await _kindProvisioner.DeleteAsync(clusterName, CancellationToken.None);
+    await _kindProvisioner.DeleteAsync(clusterName, CancellationToken.None).ConfigureAwait(false);
   }
 }

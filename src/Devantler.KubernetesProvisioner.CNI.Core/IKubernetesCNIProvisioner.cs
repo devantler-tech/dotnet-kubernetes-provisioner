@@ -1,4 +1,4 @@
-﻿namespace Devantler.KubernetesProvisioner.CNI.Core;
+namespace Devantler.KubernetesProvisioner.CNI.Core;
 
 /// <summary>
 /// A Kubernetes CNI provisioner.

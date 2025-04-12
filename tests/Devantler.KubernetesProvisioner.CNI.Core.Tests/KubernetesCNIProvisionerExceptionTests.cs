@@ -3,7 +3,7 @@ namespace Devantler.KubernetesProvisioner.CNI.Core.Tests;
 /// <summary>
 /// Tests for the <see cref="KubernetesCNIProvisionerException"/> class.
 /// </summary>
-public class KubernetesCNIProvisionerExceptionTests
+internal class KubernetesCNIProvisionerExceptionTests
 {
   /// <summary>
   /// Tests the default constructor of the <see cref="KubernetesCNIProvisionerException"/> class.

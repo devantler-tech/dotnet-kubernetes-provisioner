@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Globalization;
 using Devantler.Commons.Extensions;
 using Devantler.Commons.Utils;

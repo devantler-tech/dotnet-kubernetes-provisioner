@@ -6,7 +6,7 @@ namespace Devantler.KubernetesProvisioner.Cluster.Kind.Tests.KindProvisionerTest
 /// Tests for all methods in the <see cref="KindProvisioner"/> class.
 /// </summary>
 [Collection("Kind")]
-public class AllMethodsTests
+internal class AllMethodsTests
 {
   readonly KindProvisioner _kindProvisioner = new();
   /// <summary>
@@ -27,11 +27,11 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/kind.yaml");
 
     // Act
-    var createClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
-    var clusters = await _kindProvisioner.ListAsync(CancellationToken.None);
-    var stopClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.StopAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
-    var startClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.StartAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
-    bool clusterExists = await _kindProvisioner.ExistsAsync(clusterName, CancellationToken.None);
+    var createClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false)).ConfigureAwait(false);
+    var clusters = await _kindProvisioner.ListAsync(CancellationToken.None).ConfigureAwait(false);
+    var stopClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.StopAsync(clusterName, CancellationToken.None).ConfigureAwait(false)).ConfigureAwait(false);
+    var startClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.StartAsync(clusterName, CancellationToken.None).ConfigureAwait(false)).ConfigureAwait(false);
+    bool clusterExists = await _kindProvisioner.ExistsAsync(clusterName, CancellationToken.None).ConfigureAwait(false);
 
     // Assert
     Assert.Null(createClusterException);
@@ -41,7 +41,7 @@ public class AllMethodsTests
     Assert.True(clusterExists);
 
     // Cleanup
-    await _kindProvisioner.DeleteAsync(clusterName, CancellationToken.None);
+    await _kindProvisioner.DeleteAsync(clusterName, CancellationToken.None).ConfigureAwait(false);
   }
 
   /// <summary>
@@ -56,7 +56,7 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/invalid.yaml");
 
     // Act
-    var createClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
+    var createClusterException = await Record.ExceptionAsync(async () => await _kindProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false)).ConfigureAwait(false);
 
     // Assert
     Assert.NotNull(createClusterException);

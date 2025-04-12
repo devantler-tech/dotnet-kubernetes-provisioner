@@ -1,4 +1,4 @@
-﻿using Devantler.Commons.Extensions;
+using Devantler.Commons.Extensions;
 using Devantler.KubernetesProvisioner.CNI.Core;
 
 namespace Devantler.KubernetesProvisioner.CNI.Cilium;

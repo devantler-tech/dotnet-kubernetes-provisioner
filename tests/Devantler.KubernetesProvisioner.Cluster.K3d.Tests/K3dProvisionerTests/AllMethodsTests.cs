@@ -6,7 +6,7 @@ namespace Devantler.KubernetesProvisioner.Cluster.K3d.Tests.K3dProvisionerTests;
 /// Tests for all methods in the <see cref="K3dProvisioner"/> class.
 /// </summary>
 [Collection("K3d")]
-public class AllMethodsTests
+internal class AllMethodsTests
 {
   readonly K3dProvisioner _k3dProvisioner = new();
 
@@ -28,11 +28,11 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/k3d.yaml");
 
     // Act
-    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
-    var clusters = await _k3dProvisioner.ListAsync(CancellationToken.None);
-    var stopClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.StopAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
-    var startClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.StartAsync(clusterName, CancellationToken.None).ConfigureAwait(false));
-    bool clusterExists = await _k3dProvisioner.ExistsAsync(clusterName, CancellationToken.None);
+    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false)).ConfigureAwait(false);
+    var clusters = await _k3dProvisioner.ListAsync(CancellationToken.None).ConfigureAwait(false);
+    var stopClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.StopAsync(clusterName, CancellationToken.None).ConfigureAwait(false)).ConfigureAwait(false);
+    var startClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.StartAsync(clusterName, CancellationToken.None).ConfigureAwait(false)).ConfigureAwait(false);
+    bool clusterExists = await _k3dProvisioner.ExistsAsync(clusterName, CancellationToken.None).ConfigureAwait(false);
 
     // Assert
     Assert.Null(createClusterException);
@@ -42,7 +42,7 @@ public class AllMethodsTests
     Assert.True(clusterExists);
 
     // Cleanup
-    await _k3dProvisioner.DeleteAsync(clusterName, CancellationToken.None);
+    await _k3dProvisioner.DeleteAsync(clusterName, CancellationToken.None).ConfigureAwait(false);
   }
 
   /// <summary>
@@ -57,7 +57,7 @@ public class AllMethodsTests
     string configPath = Path.Combine(AppContext.BaseDirectory, "assets/invalid.yaml");
 
     // Act
-    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false));
+    var createClusterException = await Record.ExceptionAsync(async () => await _k3dProvisioner.CreateAsync(clusterName, configPath, CancellationToken.None).ConfigureAwait(false)).ConfigureAwait(false);
 
     // Assert
     Assert.NotNull(createClusterException);
