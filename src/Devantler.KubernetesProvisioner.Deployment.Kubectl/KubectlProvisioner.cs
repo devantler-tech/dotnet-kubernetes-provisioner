@@ -29,6 +29,31 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     {
       "apply",
       "-k", kustomizationDirectory,
+      "--wait=true",
+      $"--timeout={timeout}"
+    };
+    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+    args.AddIfNotNull("--context={0}", Context);
+    var (exitCode, result) = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+    if (exitCode != 0 && !result.Contains("error: no objects passed to apply", StringComparison.Ordinal))
+    {
+      throw new KubernetesDeploymentToolProvisionerException(result);
+    }
+
+    args =
+    [
+      "label", "provider=ksail",
+      "-k", kustomizationDirectory,
+      "--overwrite"
+    ];
+    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+    args.AddIfNotNull("--context={0}", Context);
+    _ = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+    
+    args = new List<string>
+    {
+      "apply",
+      "-k", kustomizationDirectory,
       "--prune",
       "-l=provider=ksail",
       "--wait=true",
@@ -41,15 +66,6 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     {
       throw new KubernetesDeploymentToolProvisionerException(result);
     }
-    args =
-    [
-      "label", "provider=ksail",
-      "-k", kustomizationDirectory,
-      "--overwrite"
-    ];
-    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
-    args.AddIfNotNull("--context={0}", Context);
-    _ = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     args = [
       "rollout",
