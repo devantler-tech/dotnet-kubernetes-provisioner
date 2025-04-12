@@ -1,5 +1,5 @@
-﻿using Devantler.Commons.Extensions;
-using Devantler.KubernetesProvisioner.Cluster.Core;
+using Devantler.Commons.Extensions;
+using Devantler.KubernetesProvisioner.CNI.Core;
 
 namespace Devantler.KubernetesProvisioner.CNI.Cilium;
 
@@ -27,7 +27,7 @@ public class CiliumProvisioner(string? kubeconfig = default, string? context = d
     installArgs.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     installArgs.AddIfNotNull("--context={0}", Context);
 
-    await CiliumCLI.Cilium.RunAsync([.. installArgs], cancellationToken: cancellationToken).ConfigureAwait(false);
+    _ = await CiliumCLI.Cilium.RunAsync([.. installArgs], cancellationToken: cancellationToken).ConfigureAwait(false);
     var waitArgs = new List<string>
     {
       "status",
@@ -35,6 +35,6 @@ public class CiliumProvisioner(string? kubeconfig = default, string? context = d
     };
     waitArgs.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     waitArgs.AddIfNotNull("--context={0}", Context);
-    await CiliumCLI.Cilium.RunAsync([.. waitArgs], cancellationToken: cancellationToken).ConfigureAwait(false);
+    _ = await CiliumCLI.Cilium.RunAsync([.. waitArgs], cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

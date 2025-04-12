@@ -1,4 +1,4 @@
-﻿namespace Devantler.KubernetesProvisioner.Cluster.Core;
+namespace Devantler.KubernetesProvisioner.Cluster.Core;
 
 /// <summary>
 /// A Kubernetes cluster provisioner.

@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using Devantler.ContainerEngineProvisioner.Docker;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
 
 namespace Devantler.KubernetesProvisioner.Deployment.Kubectl.Tests.KubectlProvisionerTests;

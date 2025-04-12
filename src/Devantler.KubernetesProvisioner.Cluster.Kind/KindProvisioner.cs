@@ -1,4 +1,4 @@
-﻿using CliWrap;
+using CliWrap;
 using Devantler.KubernetesProvisioner.Cluster.Core;
 using Docker.DotNet;
 using Docker.DotNet.Models;

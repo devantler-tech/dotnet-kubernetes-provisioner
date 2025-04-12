@@ -1,4 +1,4 @@
-﻿using Devantler.KubernetesProvisioner.Deployment.Core;
+using Devantler.KubernetesProvisioner.Deployment.Core;
 
 namespace Devantler.KubernetesProvisioner.GitOps.Core;
 
