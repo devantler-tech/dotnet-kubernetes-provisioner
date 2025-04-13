@@ -22,6 +22,8 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
 │   ├── Devantler.KubernetesProvisioner.Cluster.Kind
 │   ├── Devantler.KubernetesProvisioner.Deployment.Core
 │   ├── Devantler.KubernetesProvisioner.Deployment.Kubectl
+│   │   └── assets
+│   │       └── k8s
 │   ├── Devantler.KubernetesProvisioner.GitOps.Core
 │   ├── Devantler.KubernetesProvisioner.GitOps.Flux
 │   └── Devantler.KubernetesProvisioner.Resources.Native
@@ -57,7 +59,7 @@ Simple provisioners that can provision Kubernetes and Kubernetes resources.
         ├── KubernetesResourceProvisionerTests
         └── assets
 
-45 directories
+47 directories
 ```
 <!-- readme-tree end -->
 
