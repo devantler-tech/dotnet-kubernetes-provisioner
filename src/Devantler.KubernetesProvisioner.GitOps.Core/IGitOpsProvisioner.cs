@@ -31,9 +31,4 @@ public interface IGitOpsProvisioner : IDeploymentToolProvisioner
   /// Uninstall the GitOps tooling from the Kubernetes cluster.
   /// </summary>
   Task UninstallAsync(CancellationToken cancellationToken = default);
-
-  /// <summary>
-  /// Reconcile resources on the Kubernetes cluster.
-  /// </summary>
-  Task ReconcileAsync(string timeout = "5m", CancellationToken cancellationToken = default);
 }

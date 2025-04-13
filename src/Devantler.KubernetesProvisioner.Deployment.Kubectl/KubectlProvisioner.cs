@@ -27,35 +27,49 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
   {
     var args = new List<string>
     {
-      "apply",
-      "-k", kustomizationDirectory,
-      "--wait=true",
-      $"--timeout={timeout}"
+      "get",
+      "crd",
+      "applysets.k8s.devantler.tech",
+      "--no-headers",
+      "--ignore-not-found"
     };
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
-    var (exitCode, result) = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
-    if (exitCode != 0 && !result.Contains("error: no objects passed to apply", StringComparison.Ordinal))
+    var (exitCode, result) = await KubectlCLI.Kubectl.RunAsync(
+      [.. args],
+      silent: true,
+      cancellationToken: cancellationToken
+    ).ConfigureAwait(false);
+    if (exitCode != 0)
     {
       throw new KubernetesDeploymentToolProvisionerException(result);
     }
-
+    if (!result.Contains("applysets.k8s.devantler.tech", StringComparison.Ordinal))
+    {
+      args =
+      [
+        "apply",
+        "-f", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "k8s", "apply-set-crd.yaml")
+      ];
+      args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+      args.AddIfNotNull("--context={0}", Context);
+      _ = await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+      args =
+      [
+        "apply",
+        "-f", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "k8s", "apply-set-cr.yaml")
+      ];
+      args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+      args.AddIfNotNull("--context={0}", Context);
+      _ = await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+    Environment.SetEnvironmentVariable("KUBECTL_APPLYSET", "true");
     args =
     [
-      "label", "provider=ksail",
-      "-k", kustomizationDirectory,
-      "--overwrite"
-    ];
-    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
-    args.AddIfNotNull("--context={0}", Context);
-    _ = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
-
-    args = [
       "apply",
       "-k", kustomizationDirectory,
       "--prune",
-      "-l=provider=ksail",
-      "--wait=true",
+      "--applyset=applysets.k8s.devantler.tech/ksail",
       $"--timeout={timeout}"
     ];
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
@@ -65,16 +79,21 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     {
       throw new KubernetesDeploymentToolProvisionerException(result);
     }
+    Environment.SetEnvironmentVariable("KUBECTL_APPLYSET", null);
+  }
 
-    args = [
+  /// <inheritdoc/>
+  public async Task ReconcileAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
+  {
+    var args = new List<string>
+    {
       "rollout",
       "status",
       "-k", kustomizationDirectory,
-      "-l=provider=ksail",
-      $"--timeout={timeout}",
-    ];
+      $"--timeout={timeout}"
+    };
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
-    _ = await KubectlCLI.Kubectl.RunAsync([.. args], validation: CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+    _ = await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

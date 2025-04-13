@@ -48,7 +48,7 @@ public class AllMethodsTests
     }
 
     await fluxProvisioner.InstallAsync(ociUri, kustomizationDirectoryPath, true, cancellationToken: cancellationToken);
-    await fluxProvisioner.ReconcileAsync(cancellationToken: cancellationToken);
+    await fluxProvisioner.ReconcileAsync(manifestsDirectoryPath, cancellationToken: cancellationToken);
     await fluxProvisioner.UninstallAsync(cancellationToken);
 
     // Cleanup

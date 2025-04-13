@@ -22,4 +22,9 @@ public interface IDeploymentToolProvisioner
   /// <param name="timeout"></param>
   /// <param name="cancellationToken"></param>
   Task PushAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default);
+
+  /// <summary>
+  /// Reconcile resources on the Kubernetes cluster.
+  /// </summary>
+  Task ReconcileAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default);
 }
