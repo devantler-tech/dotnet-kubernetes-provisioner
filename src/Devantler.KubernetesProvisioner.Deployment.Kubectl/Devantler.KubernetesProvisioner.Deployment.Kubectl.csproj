@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Devantler.KubernetesProvisioner.Deployment.Core\Devantler.KubernetesProvisioner.Deployment.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="assets/k8s/*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

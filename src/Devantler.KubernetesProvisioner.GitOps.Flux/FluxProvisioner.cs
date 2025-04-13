@@ -63,7 +63,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
     await CreateKustomizationAsync(kustomizationDirectory, interval: "1m", cancellationToken).ConfigureAwait(false);
   }
   /// <inheritdoc/>
-  public async Task ReconcileAsync(string timeout = "5m", CancellationToken cancellationToken = default)
+  public async Task ReconcileAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Kubeconfig, Context);
     var kustomizationList = await kubernetesResourceProvisioner.ListNamespacedCustomObjectAsync<FluxKustomizationList>(
