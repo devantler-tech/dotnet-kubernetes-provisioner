@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="assets/k8s/*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" PackagePath="assets/k8s/" />
+    <Content Include="assets/**/*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Pack="true" PackagePath="contentFiles/assets/" />
   </ItemGroup>
 
 </Project>
