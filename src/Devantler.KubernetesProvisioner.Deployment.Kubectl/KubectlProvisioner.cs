@@ -94,6 +94,6 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
     };
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
-    _ = await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    _ = await KubectlCLI.Kubectl.RunAsync([.. args], CliWrap.CommandResultValidation.None, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }
