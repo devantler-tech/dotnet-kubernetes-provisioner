@@ -20,7 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="assets/**/*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Pack="true" PackagePath="contentFiles/any/any/assets" />
+    <Content Include="assets/**">
+      <Pack>true</Pack>
+      <PackagePath>contentFiles/any/any/assets</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
