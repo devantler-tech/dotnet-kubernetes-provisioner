@@ -30,6 +30,11 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       throw new KubernetesClusterProvisionerException("Failed to delete Kind cluster.");
     }
 
+    await DeleteCloudProviderKindContainer(cancellationToken).ConfigureAwait(false);
+  }
+
+  async Task DeleteCloudProviderKindContainer(CancellationToken cancellationToken)
+  {
     var clusters = await ListAsync(cancellationToken).ConfigureAwait(false);
     if (!clusters.Any())
     {
@@ -105,6 +110,11 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       Console.WriteLine(" ✓ cloud-provider-kind container already running");
       return;
     }
+    await CreateCloudProviderKindContainer(cancellationToken).ConfigureAwait(false);
+  }
+
+  async Task CreateCloudProviderKindContainer(CancellationToken cancellationToken)
+  {
     string cloudControllerManagerImage = $"registry.k8s.io/cloud-provider-kind/cloud-controller-manager";
     string cloudControllerManagerTag = "v0.6.0";
     Console.WriteLine($" • Pulling image {cloudControllerManagerImage}:{cloudControllerManagerTag}");
@@ -190,6 +200,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
         await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
       }
     }
+    await CreateCloudProviderKindContainer(cancellationToken).ConfigureAwait(false);
   }
 
   /// <inheritdoc />
