@@ -215,5 +215,6 @@ public class KindProvisioner : IKubernetesClusterProvisioner
           .ConfigureAwait(false);
       }
     }
+    await DeleteCloudProviderKindContainer(cancellationToken).ConfigureAwait(false);
   }
 }
