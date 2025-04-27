@@ -30,23 +30,22 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       throw new KubernetesClusterProvisionerException("Failed to delete Kind cluster.");
     }
 
-    // if no more clusters are running, remove the cloud-provider-kind container
     var clusters = await ListAsync(cancellationToken).ConfigureAwait(false);
     if (!clusters.Any())
     {
-      // get the cloud-provider-kind container
       var containersListParameters = new ContainersListParameters
       {
         All = true
       };
       var containers = await _dockerClient.Containers.ListContainersAsync(containersListParameters, cancellationToken).ConfigureAwait(false);
       var container = containers.FirstOrDefault(c => c.Names.Any(name => name.Equals("/cloud-provider-kind", StringComparison.OrdinalIgnoreCase)));
-      Console.WriteLine("Deleting cloud-provider-kind container...");
+      Console.WriteLine("Deleting container \"cloud-provider-kind\"...");
       _ = await _dockerClient.Containers.StopContainerAsync(
         container?.ID,
         new ContainerStopParameters(),
         cancellationToken
       ).ConfigureAwait(false);
+      Console.WriteLine("Deleted containers: [\"cloud-provider-kind\"]");
     }
   }
 
@@ -68,7 +67,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       throw new KubernetesClusterProvisionerException("Failed to list Kind clusters.");
     }
     string[] clusterNames = result.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-    return clusterNames;
+    return clusterNames.Where(cluster => !cluster.Contains("No kind clusters found.", StringComparison.Ordinal));
   }
 
   /// <inheritdoc />
