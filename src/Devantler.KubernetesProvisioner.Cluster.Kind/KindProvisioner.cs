@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using CliWrap;
 using Devantler.KubernetesProvisioner.Cluster.Core;
 using Docker.DotNet;
@@ -13,7 +12,20 @@ namespace Devantler.KubernetesProvisioner.Cluster.Kind;
 /// </summary>
 public class KindProvisioner : IKubernetesClusterProvisioner
 {
-  readonly DockerClient _dockerClient = new DockerClientConfiguration().CreateClient();
+  readonly DockerClient _dockerClient;
+  readonly CloudProviderKindProvisioner _cloudProviderKindProvisioner;
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="KindProvisioner"/> class.
+  /// </summary>
+  public KindProvisioner()
+  {
+    using (var dockerClientConfig = new DockerClientConfiguration())
+    {
+      _dockerClient = dockerClientConfig.CreateClient();
+    }
+    _cloudProviderKindProvisioner = new CloudProviderKindProvisioner(_dockerClient);
+  }
 
   /// <inheritdoc />
   public async Task DeleteAsync(string clusterName, CancellationToken cancellationToken = default)
@@ -29,24 +41,10 @@ public class KindProvisioner : IKubernetesClusterProvisioner
     {
       throw new KubernetesClusterProvisionerException("Failed to delete Kind cluster.");
     }
-
-    // if no more clusters are running, remove the cloud-provider-kind container
     var clusters = await ListAsync(cancellationToken).ConfigureAwait(false);
     if (!clusters.Any())
     {
-      // get the cloud-provider-kind container
-      var containersListParameters = new ContainersListParameters
-      {
-        All = true
-      };
-      var containers = await _dockerClient.Containers.ListContainersAsync(containersListParameters, cancellationToken).ConfigureAwait(false);
-      var container = containers.FirstOrDefault(c => c.Names.Any(name => name.Equals("/cloud-provider-kind", StringComparison.OrdinalIgnoreCase)));
-      Console.WriteLine("Deleting cloud-provider-kind container...");
-      _ = await _dockerClient.Containers.StopContainerAsync(
-        container?.ID,
-        new ContainerStopParameters(),
-        cancellationToken
-      ).ConfigureAwait(false);
+      _ = _cloudProviderKindProvisioner.DeleteAsync(cancellationToken).ConfigureAwait(false);
     }
   }
 
@@ -68,7 +66,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       throw new KubernetesClusterProvisionerException("Failed to list Kind clusters.");
     }
     string[] clusterNames = result.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-    return clusterNames;
+    return clusterNames.Where(cluster => !cluster.Contains("No kind clusters found.", StringComparison.Ordinal));
   }
 
   /// <inheritdoc />
@@ -101,48 +99,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       Console.WriteLine(" ✓ cloud-provider-kind container already running");
       return;
     }
-    string cloudControllerManagerImage = $"registry.k8s.io/cloud-provider-kind/cloud-controller-manager";
-    string cloudControllerManagerTag = "v0.6.0";
-    Console.WriteLine($" • Pulling image {cloudControllerManagerImage}:{cloudControllerManagerTag}");
-    var cloudControllerContainerImageParameters = new ImagesCreateParameters
-    {
-      FromImage = cloudControllerManagerImage,
-      Tag = cloudControllerManagerTag
-    };
-    await _dockerClient.Images.CreateImageAsync(
-      cloudControllerContainerImageParameters,
-      new AuthConfig(),
-      new Progress<JSONMessage>(),
-      cancellationToken
-    ).ConfigureAwait(false);
-    Console.WriteLine($" ✓ Pulled image {cloudControllerManagerImage}:{cloudControllerManagerTag}");
-    Console.WriteLine($" • Creating container cloud-provider-kind");
-    var cloudControllerContainerParameters = new CreateContainerParameters
-    {
-      Image = $"{cloudControllerManagerImage}:{cloudControllerManagerTag}",
-      Name = "cloud-provider-kind",
-      HostConfig = new HostConfig
-      {
-        AutoRemove = true,
-        // TODO: Ensure this is the correct network when using multiple clusters
-        NetworkMode = "kind",
-        Binds =
-        [
-          "/var/run/docker.sock:/var/run/docker.sock"
-        ]
-      }
-    };
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-    {
-      Console.WriteLine(" • Enabling port mapping on Windows/MacOS");
-      Console.WriteLine("   See https://github.com/kubernetes-sigs/cloud-provider-kind#enabling-load-balancer-port-mapping");
-      cloudControllerContainerParameters.Cmd = ["-enable-lb-port-mapping"];
-    }
-    var cloudControllerManagerContainerCreateResponse = await _dockerClient.Containers.CreateContainerAsync(cloudControllerContainerParameters, cancellationToken).ConfigureAwait(false);
-    Console.WriteLine($" ✓ Created container cloud-provider-kind");
-    Console.WriteLine($" • Starting container cloud-provider-kind");
-    _ = await _dockerClient.Containers.StartContainerAsync(cloudControllerManagerContainerCreateResponse.ID, new ContainerStartParameters(), cancellationToken).ConfigureAwait(false);
-    Console.WriteLine($" ✓ Started container cloud-provider-kind");
+    _ = _cloudProviderKindProvisioner.CreateAsync(cancellationToken).ConfigureAwait(false);
   }
 
   /// <inheritdoc />
@@ -186,6 +143,8 @@ public class KindProvisioner : IKubernetesClusterProvisioner
         await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
       }
     }
+
+    _ = _cloudProviderKindProvisioner.CreateAsync(cancellationToken).ConfigureAwait(false);
   }
 
   /// <inheritdoc />
@@ -199,6 +158,11 @@ public class KindProvisioner : IKubernetesClusterProvisioner
           .StopContainerAsync(container.ID, new ContainerStopParameters(), cancellationToken)
           .ConfigureAwait(false);
       }
+    }
+    var clusters = await ListAsync(cancellationToken).ConfigureAwait(false);
+    if (!clusters.Any())
+    {
+      _ = _cloudProviderKindProvisioner.DeleteAsync(cancellationToken).ConfigureAwait(false);
     }
   }
 }
