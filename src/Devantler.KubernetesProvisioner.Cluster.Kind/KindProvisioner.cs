@@ -29,13 +29,20 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       throw new KubernetesClusterProvisionerException("Failed to delete Kind cluster.");
     }
 
-    var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }, cancellationToken).ConfigureAwait(false);
-    var container = containers.FirstOrDefault(c => c.Names.Any(name => name.Equals($"/{clusterName}-cloud-provider-kind", StringComparison.OrdinalIgnoreCase)));
-    if (container != null)
+    // if no more clusters are running, remove the cloud-provider-kind container
+    var clusters = await ListAsync(cancellationToken).ConfigureAwait(false);
+    if (!clusters.Any())
     {
-      Console.WriteLine($"Deleting {clusterName}-cloud-provider-kind container...");
+      // get the cloud-provider-kind container
+      var containersListParameters = new ContainersListParameters
+      {
+        All = true
+      };
+      var containers = await _dockerClient.Containers.ListContainersAsync(containersListParameters, cancellationToken).ConfigureAwait(false);
+      var container = containers.FirstOrDefault(c => c.Names.Any(name => name.Equals("/cloud-provider-kind", StringComparison.OrdinalIgnoreCase)));
+      Console.WriteLine("Deleting cloud-provider-kind container...");
       _ = await _dockerClient.Containers.StopContainerAsync(
-        container.ID,
+        container?.ID,
         new ContainerStopParameters(),
         cancellationToken
       ).ConfigureAwait(false);
