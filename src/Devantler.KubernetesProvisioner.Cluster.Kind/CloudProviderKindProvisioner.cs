@@ -17,6 +17,17 @@ public class CloudProviderKindProvisioner(DockerClient dockerClient)
   /// <returns></returns>
   public async Task CreateAsync(CancellationToken cancellationToken)
   {
+    var containersListParameters = new ContainersListParameters
+    {
+      All = true
+    };
+    var containers = await dockerClient.Containers.ListContainersAsync(containersListParameters, cancellationToken).ConfigureAwait(false);
+    var existingContainer = containers.FirstOrDefault(c => c.Names.Any(name => name.Equals("/cloud-provider-kind", StringComparison.OrdinalIgnoreCase)));
+    if (existingContainer != null)
+    {
+      return;
+    }
+
     string cloudControllerManagerImage = $"registry.k8s.io/cloud-provider-kind/cloud-controller-manager";
     string cloudControllerManagerTag = "v0.6.0";
     Console.WriteLine($" • Pulling image {cloudControllerManagerImage}:{cloudControllerManagerTag}");
