@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using CliWrap;
 using Devantler.KubernetesProvisioner.Cluster.Core;
 using Docker.DotNet;
@@ -131,9 +132,11 @@ public class KindProvisioner : IKubernetesClusterProvisioner
         ]
       }
     };
-    if (Environment.OSVersion.Platform is PlatformID.Win32NT or PlatformID.MacOSX)
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
     {
-      cloudControllerContainerParameters.Cmd = ["--enable-lb-port-mapping"];
+      Console.WriteLine(" • Enabling port mapping on Windows/MacOS");
+      Console.WriteLine("   See https://github.com/kubernetes-sigs/cloud-provider-kind#enabling-load-balancer-port-mapping");
+      cloudControllerContainerParameters.Cmd = ["-enable-lb-port-mapping"];
     }
     var cloudControllerManagerContainerCreateResponse = await _dockerClient.Containers.CreateContainerAsync(cloudControllerContainerParameters, cancellationToken).ConfigureAwait(false);
     Console.WriteLine($" ✓ Created container cloud-provider-kind");
