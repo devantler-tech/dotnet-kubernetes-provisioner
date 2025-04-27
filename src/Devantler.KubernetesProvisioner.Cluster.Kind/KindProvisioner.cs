@@ -44,7 +44,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
     var clusters = await ListAsync(cancellationToken).ConfigureAwait(false);
     if (!clusters.Any())
     {
-      _ = _cloudProviderKindProvisioner.DeleteAsync(cancellationToken).ConfigureAwait(false);
+      await _cloudProviderKindProvisioner.DeleteAsync(cancellationToken).ConfigureAwait(false);
     }
   }
 
@@ -99,7 +99,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       Console.WriteLine(" ✓ cloud-provider-kind container already running");
       return;
     }
-    _ = _cloudProviderKindProvisioner.CreateAsync(cancellationToken).ConfigureAwait(false);
+    await _cloudProviderKindProvisioner.CreateAsync(cancellationToken).ConfigureAwait(false);
   }
 
   /// <inheritdoc />
@@ -144,7 +144,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       }
     }
 
-    _ = _cloudProviderKindProvisioner.CreateAsync(cancellationToken).ConfigureAwait(false);
+    await _cloudProviderKindProvisioner.CreateAsync(cancellationToken).ConfigureAwait(false);
   }
 
   /// <inheritdoc />
@@ -162,7 +162,7 @@ public class KindProvisioner : IKubernetesClusterProvisioner
     var clusters = await ListAsync(cancellationToken).ConfigureAwait(false);
     if (!clusters.Any())
     {
-      _ = _cloudProviderKindProvisioner.DeleteAsync(cancellationToken).ConfigureAwait(false);
+      await _cloudProviderKindProvisioner.DeleteAsync(cancellationToken).ConfigureAwait(false);
     }
   }
 }
