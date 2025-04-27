@@ -52,6 +52,7 @@ dotnet_naming_style.constant_style.capitalization = pascal_case
 
 # Disable rules
 dotnet_diagnostic.CA1014.severity = none
+dotnet_diagnostic.CA1303.severity = none
 
 [*.{received,verified}.*]
 generated_code = true

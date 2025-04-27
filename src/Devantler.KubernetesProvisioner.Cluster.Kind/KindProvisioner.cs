@@ -28,6 +28,13 @@ public class KindProvisioner : IKubernetesClusterProvisioner
     {
       throw new KubernetesClusterProvisionerException("Failed to delete Kind cluster.");
     }
+
+    Console.WriteLine($"Deleting {clusterName}-cloud-provider-kind container...");
+    _ = await _dockerClient.Containers.StopContainerAsync(
+      $"{clusterName}-cloud-provider-kind",
+      new ContainerStopParameters(),
+      cancellationToken
+    ).ConfigureAwait(false);
   }
 
   /// <inheritdoc />
@@ -66,6 +73,45 @@ public class KindProvisioner : IKubernetesClusterProvisioner
     {
       throw new KubernetesClusterProvisionerException("Failed to create Kind cluster.");
     }
+
+    Console.WriteLine();
+    Console.WriteLine("Creating cloud provider kind container...");
+    string cloudControllerManagerImage = $"registry.k8s.io/cloud-provider-kind/cloud-controller-manager";
+    string cloudControllerManagerTag = "v0.6.0";
+    Console.WriteLine($" • Pulling image {cloudControllerManagerImage}:{cloudControllerManagerTag}");
+    var cloudControllerContainerImageParameters = new ImagesCreateParameters
+    {
+      FromImage = cloudControllerManagerImage,
+      Tag = cloudControllerManagerTag
+    };
+    await _dockerClient.Images.CreateImageAsync(
+      cloudControllerContainerImageParameters,
+      new AuthConfig(),
+      new Progress<JSONMessage>(),
+      cancellationToken
+    ).ConfigureAwait(false);
+    Console.WriteLine($" ✓ Pulled image {cloudControllerManagerImage}:{cloudControllerManagerTag}");
+    Console.WriteLine($" • Creating container {clusterName}-cloud-provider-kind");
+    var cloudControllerContainerParameters = new CreateContainerParameters
+    {
+      Image = $"{cloudControllerManagerImage}:{cloudControllerManagerTag}",
+      Name = $"{clusterName}-cloud-provider-kind",
+      HostConfig = new HostConfig
+      {
+        AutoRemove = true,
+        // TODO: Ensure this is the correct network when using multiple clusters
+        NetworkMode = "kind",
+        Binds =
+        [
+          "/var/run/docker.sock:/var/run/docker.sock"
+        ]
+      }
+    };
+    var cloudControllerManagerContainerCreateResponse = await _dockerClient.Containers.CreateContainerAsync(cloudControllerContainerParameters, cancellationToken).ConfigureAwait(false);
+    Console.WriteLine($" ✓ Created container {clusterName}-cloud-provider-kind");
+    Console.WriteLine($" • Starting container {clusterName}-cloud-provider-kind");
+    _ = await _dockerClient.Containers.StartContainerAsync(cloudControllerManagerContainerCreateResponse.ID, new ContainerStartParameters(), cancellationToken).ConfigureAwait(false);
+    Console.WriteLine($" ✓ Started container {clusterName}-cloud-provider-kind");
   }
 
   /// <inheritdoc />
