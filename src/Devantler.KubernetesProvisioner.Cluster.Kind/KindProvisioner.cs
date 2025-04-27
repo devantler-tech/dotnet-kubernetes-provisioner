@@ -29,12 +29,17 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       throw new KubernetesClusterProvisionerException("Failed to delete Kind cluster.");
     }
 
-    Console.WriteLine($"Deleting {clusterName}-cloud-provider-kind container...");
-    _ = await _dockerClient.Containers.StopContainerAsync(
-      $"{clusterName}-cloud-provider-kind",
-      new ContainerStopParameters(),
-      cancellationToken
-    ).ConfigureAwait(false);
+    var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }, cancellationToken).ConfigureAwait(false);
+    var container = containers.FirstOrDefault(c => c.Names.Any(name => name.Equals($"/{clusterName}-cloud-provider-kind", StringComparison.OrdinalIgnoreCase)));
+    if (container != null)
+    {
+      Console.WriteLine($"Deleting {clusterName}-cloud-provider-kind container...");
+      _ = await _dockerClient.Containers.StopContainerAsync(
+        container.ID,
+        new ContainerStopParameters(),
+        cancellationToken
+      ).ConfigureAwait(false);
+    }
   }
 
   /// <inheritdoc />
