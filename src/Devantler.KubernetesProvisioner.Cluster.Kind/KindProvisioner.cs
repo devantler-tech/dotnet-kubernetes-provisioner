@@ -40,8 +40,13 @@ public class KindProvisioner : IKubernetesClusterProvisioner
       var containers = await _dockerClient.Containers.ListContainersAsync(containersListParameters, cancellationToken).ConfigureAwait(false);
       var container = containers.FirstOrDefault(c => c.Names.Any(name => name.Equals("/cloud-provider-kind", StringComparison.OrdinalIgnoreCase)));
       Console.WriteLine("Deleting container \"cloud-provider-kind\"...");
+      if (container == null)
+      {
+        Console.WriteLine("Deleted containers: []");
+        return;
+      }
       _ = await _dockerClient.Containers.StopContainerAsync(
-        container?.ID,
+        container.ID,
         new ContainerStopParameters(),
         cancellationToken
       ).ConfigureAwait(false);
