@@ -65,6 +65,22 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   /// <inheritdoc/>
   public async Task ReconcileAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
+    // sync the OCI source
+    var args = new List<string>
+    {
+      "reconcile",
+      "source",
+      "oci",
+      "flux-system",
+      "--timeout", timeout
+    };
+    args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+    args.AddIfNotNull("--context={0}", Context);
+    var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+    if (exitCode != 0)
+    {
+      throw new KubernetesGitOpsProvisionerException($"Failed to reconcile OCI source");
+    }
     using var kubernetesResourceProvisioner = new KubernetesResourceProvisioner(Kubeconfig, Context);
     var kustomizationList = await kubernetesResourceProvisioner.ListNamespacedCustomObjectAsync<FluxKustomizationList>(
       "kustomize.toolkit.fluxcd.io",
