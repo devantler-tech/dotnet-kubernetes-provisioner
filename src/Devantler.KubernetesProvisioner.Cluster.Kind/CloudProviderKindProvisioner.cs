@@ -44,28 +44,38 @@ public class CloudProviderKindProvisioner(DockerClient dockerClient)
     ).ConfigureAwait(false);
     Console.WriteLine($" ✓ Pulled image {cloudControllerManagerImage}:{cloudControllerManagerTag}");
     Console.WriteLine($" • Creating container cloud-provider-kind");
-    var cloudControllerContainerParameters = new CreateContainerParameters
+    try
     {
-      Image = $"{cloudControllerManagerImage}:{cloudControllerManagerTag}",
-      Name = "cloud-provider-kind",
-      HostConfig = new HostConfig
+      var cloudControllerContainerParameters = new CreateContainerParameters
       {
-        AutoRemove = true,
-        // TODO: Ensure this is the correct network when using multiple clusters
-        NetworkMode = "kind",
-        Binds =
-        [
-          "/var/run/docker.sock:/var/run/docker.sock"
-        ]
+        Image = $"{cloudControllerManagerImage}:{cloudControllerManagerTag}",
+        Name = "cloud-provider-kind",
+        HostConfig = new HostConfig
+        {
+          AutoRemove = true,
+          // TODO: Ensure this is the correct network when using multiple clusters
+          NetworkMode = "kind",
+          Binds =
+          [
+            "/var/run/docker.sock:/var/run/docker.sock"
+          ]
+        }
+      };
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+      {
+        Console.WriteLine(" • Enabling port mapping on Windows/MacOS");
+        Console.WriteLine("   See https://github.com/kubernetes-sigs/cloud-provider-kind#enabling-load-balancer-port-mapping");
+        cloudControllerContainerParameters.Cmd = ["-enable-lb-port-mapping"];
       }
-    };
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-    {
-      Console.WriteLine(" • Enabling port mapping on Windows/MacOS");
-      Console.WriteLine("   See https://github.com/kubernetes-sigs/cloud-provider-kind#enabling-load-balancer-port-mapping");
-      cloudControllerContainerParameters.Cmd = ["-enable-lb-port-mapping"];
+      var cloudControllerManagerContainerCreateResponse = await dockerClient.Containers.CreateContainerAsync(cloudControllerContainerParameters, cancellationToken).ConfigureAwait(false);
     }
-    var cloudControllerManagerContainerCreateResponse = await dockerClient.Containers.CreateContainerAsync(cloudControllerContainerParameters, cancellationToken).ConfigureAwait(false);
+    catch (DockerApiException ex)
+    {
+      if (!ex.Message.Contains("already in use by container", StringComparison.OrdinalIgnoreCase))
+      {
+        throw;
+      }
+    }
     Console.WriteLine($" ✓ Created container cloud-provider-kind");
     Console.WriteLine($" • Starting container cloud-provider-kind");
     _ = await dockerClient.Containers.StartContainerAsync(cloudControllerManagerContainerCreateResponse.ID, new ContainerStartParameters(), cancellationToken).ConfigureAwait(false);
