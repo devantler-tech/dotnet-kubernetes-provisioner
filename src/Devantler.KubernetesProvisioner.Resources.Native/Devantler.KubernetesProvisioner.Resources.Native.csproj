@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="KubernetesClient" Version="16.0.2" />
+    <PackageReference Include="KubernetesClient" Version="16.0.7" />
   </ItemGroup>
 
 </Project>
