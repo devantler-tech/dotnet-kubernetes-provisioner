@@ -59,17 +59,33 @@ public class CloudProviderKindProvisioner(DockerClient dockerClient)
         ]
       }
     };
+    CreateContainerResponse? cloudControllerManagerContainerCreateResponse = null;
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
     {
       Console.WriteLine(" • Enabling port mapping on Windows/MacOS");
       Console.WriteLine("   See https://github.com/kubernetes-sigs/cloud-provider-kind#enabling-load-balancer-port-mapping");
       cloudControllerContainerParameters.Cmd = ["-enable-lb-port-mapping"];
     }
-    var cloudControllerManagerContainerCreateResponse = await dockerClient.Containers.CreateContainerAsync(cloudControllerContainerParameters, cancellationToken).ConfigureAwait(false);
-    Console.WriteLine($" ✓ Created container cloud-provider-kind");
-    Console.WriteLine($" • Starting container cloud-provider-kind");
-    _ = await dockerClient.Containers.StartContainerAsync(cloudControllerManagerContainerCreateResponse.ID, new ContainerStartParameters(), cancellationToken).ConfigureAwait(false);
-    Console.WriteLine($" ✓ Started container cloud-provider-kind");
+    try
+    {
+      cloudControllerManagerContainerCreateResponse = await dockerClient.Containers.CreateContainerAsync(cloudControllerContainerParameters, cancellationToken).ConfigureAwait(false);
+    }
+    catch (DockerApiException ex)
+    {
+      if (!ex.Message.Contains("already in use by container", StringComparison.OrdinalIgnoreCase))
+      {
+        throw;
+      }
+      Console.WriteLine(" ✓ Skipped creating container cloud-provider-kind, already exists");
+    }
+    string? id = cloudControllerManagerContainerCreateResponse?.ID;
+    if (!string.IsNullOrEmpty(id))
+    {
+      Console.WriteLine($" ✓ Created container cloud-provider-kind");
+      Console.WriteLine($" • Starting container cloud-provider-kind");
+      _ = await dockerClient.Containers.StartContainerAsync(id, new ContainerStartParameters(), cancellationToken).ConfigureAwait(false);
+      Console.WriteLine($" ✓ Started container cloud-provider-kind");
+    }
   }
 
   /// <summary>
