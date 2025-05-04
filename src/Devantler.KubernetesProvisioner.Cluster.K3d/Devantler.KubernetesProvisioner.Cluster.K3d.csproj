@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Devantler.K3dCLI" Version="1.2.6" />
+    <PackageReference Include="Devantler.K3dCLI" Version="1.2.7" />
   </ItemGroup>
 
   <ItemGroup>
