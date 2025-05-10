@@ -289,8 +289,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
       "--path", kustomizationDirectory,
       "--namespace", "flux-system",
       "--interval", interval,
-      "--prune",
-      "--wait"
+      "--prune"
     };
     args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
     args.AddIfNotNull("--context={0}", Context);
