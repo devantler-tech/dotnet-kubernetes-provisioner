@@ -30,23 +30,38 @@ public class CloudProviderKindProvisioner(DockerClient dockerClient)
 
     string cloudControllerManagerImage = $"registry.k8s.io/cloud-provider-kind/cloud-controller-manager";
     string cloudControllerManagerTag = "v0.6.0";
-    Console.WriteLine($" • Pulling image {cloudControllerManagerImage}:{cloudControllerManagerTag}");
-    var cloudControllerContainerImageParameters = new ImagesCreateParameters
+    string fullImageName = $"{cloudControllerManagerImage}:{cloudControllerManagerTag}";
+
+    var images = await dockerClient.Images.ListImagesAsync(new ImagesListParameters { All = true }, cancellationToken).ConfigureAwait(false);
+    bool imageExists = images.Any(img =>
+      img.RepoTags != null && img.RepoTags.Any(tag => tag.Equals(fullImageName, StringComparison.OrdinalIgnoreCase))
+    );
+
+    if (!imageExists)
     {
-      FromImage = cloudControllerManagerImage,
-      Tag = cloudControllerManagerTag
-    };
-    await dockerClient.Images.CreateImageAsync(
-      cloudControllerContainerImageParameters,
-      new AuthConfig(),
-      new Progress<JSONMessage>(),
-      cancellationToken
-    ).ConfigureAwait(false);
-    Console.WriteLine($" ✓ Pulled image {cloudControllerManagerImage}:{cloudControllerManagerTag}");
+      Console.WriteLine($" • Pulling image {fullImageName}");
+      var cloudControllerContainerImageParameters = new ImagesCreateParameters
+      {
+        FromImage = cloudControllerManagerImage,
+        Tag = cloudControllerManagerTag
+      };
+      await dockerClient.Images.CreateImageAsync(
+        cloudControllerContainerImageParameters,
+        new AuthConfig(),
+        new Progress<JSONMessage>(),
+        cancellationToken
+      ).ConfigureAwait(false);
+      Console.WriteLine($" ✓ Pulled image {fullImageName}");
+    }
+    else
+    {
+      Console.WriteLine($" ✓ Image {fullImageName} already exists locally, skipping pull");
+    }
+
     Console.WriteLine($" • Creating container cloud-provider-kind");
     var cloudControllerContainerParameters = new CreateContainerParameters
     {
-      Image = $"{cloudControllerManagerImage}:{cloudControllerManagerTag}",
+      Image = fullImageName,
       Name = "cloud-provider-kind",
       HostConfig = new HostConfig
       {
