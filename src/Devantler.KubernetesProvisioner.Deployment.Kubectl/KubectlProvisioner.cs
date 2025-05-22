@@ -56,6 +56,16 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
       _ = await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
       args =
       [
+        "wait",
+        "--for=condition=established",
+        "--timeout=60s",
+        "crd", "applysets.k8s.devantler.tech"
+      ];
+      args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+      args.AddIfNotNull("--context={0}", Context);
+      _ = await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+      args =
+      [
         "apply",
         "-f", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "k8s", "apply-set-cr.yaml")
       ];
