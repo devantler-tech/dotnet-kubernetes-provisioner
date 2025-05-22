@@ -1,3 +1,4 @@
+using CliWrap.Exceptions;
 using Devantler.Commons.Extensions;
 using Devantler.KubernetesProvisioner.Deployment.Core;
 
@@ -54,16 +55,7 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
       args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
       args.AddIfNotNull("--context={0}", Context);
       _ = await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
-      args =
-      [
-        "wait",
-        "--for=condition=established",
-        "--timeout=60s",
-        "crd", "applysets.k8s.devantler.tech"
-      ];
-      args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
-      args.AddIfNotNull("--context={0}", Context);
-      _ = await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+      await WaitForCRDToBeEstablished(cancellationToken).ConfigureAwait(false);
       args =
       [
         "apply",
@@ -90,6 +82,36 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
       throw new KubernetesDeploymentToolProvisionerException(result);
     }
     Environment.SetEnvironmentVariable("KUBECTL_APPLYSET", null);
+  }
+
+  async Task WaitForCRDToBeEstablished(CancellationToken cancellationToken)
+  {
+    bool crdEstablished = false;
+    int retries = 0;
+    do
+    {
+      try
+      {
+        var args = new List<string>
+        {
+          "wait",
+          "--for=condition=established",
+          "--timeout=60s",
+          "crd", "applysets.k8s.devantler.tech"
+        };
+        args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+        args.AddIfNotNull("--context={0}", Context);
+        _ = await KubectlCLI.Kubectl.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+        crdEstablished = true;
+      }
+      catch (CommandExecutionException)
+      {
+        retries++;
+        if (retries >= 3)
+          throw;
+        await Task.Delay(500, cancellationToken).ConfigureAwait(false);
+      }
+    } while (!crdEstablished);
   }
 
   /// <inheritdoc/>
