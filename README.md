@@ -16,22 +16,22 @@ To get started, you can install the packages from NuGet.
 
 ```bash
 # For provisioning a K3d cluster
-dotnet add package Devantler.KubernetesProvisioner.Cluster.K3d
+dotnet add package DevantlerTech.KubernetesProvisioner.Cluster.K3d
 
 # For provisioning a Kind cluster
-dotnet add package Devantler.KubernetesProvisioner.Cluster.Kind
+dotnet add package DevantlerTech.KubernetesProvisioner.Cluster.Kind
 
 # For provisioning Cilium CNI
-dotnet add package Devantler.KubernetesProvisioner.CNI.Cilium
+dotnet add package DevantlerTech.KubernetesProvisioner.CNI.Cilium
 
 # For provisioning manifests with Kubectl
-dotnet add package Devantler.KubernetesProvisioner.Deployment.Kubectl
+dotnet add package DevantlerTech.KubernetesProvisioner.Deployment.Kubectl
 
 # For provisioning Flux GitOps tooling
-dotnet add package Devantler.KubernetesProvisioner.GitOps.Flux
+dotnet add package DevantlerTech.KubernetesProvisioner.GitOps.Flux
 
 # For provisioning native Kubernetes resources
-dotnet add package Devantler.KubernetesProvisioner.Resources.Native
+dotnet add package DevantlerTech.KubernetesProvisioner.Resources.Native
 ```
 
 ## 📝 Usage
@@ -39,7 +39,7 @@ dotnet add package Devantler.KubernetesProvisioner.Resources.Native
 To use the provisioners, all you need to do is to create and use a new instance of the provisioner.
 
 ```csharp
-using Devantler.KubernetesProvisioner.Cluster.K3d;
+using DevantlerTech.KubernetesProvisioner.Cluster.K3d;
 
 var provisioner = new K3dProvisioner();
 
