@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AnalysisMode>All</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevantlerTech.FluxCLI" Version="1.9.2" />
+    <PackageReference Include="DevantlerTech.KubernetesGenerator.Flux" Version="1.8.0" />
+    <PackageReference Include="DevantlerTech.Commons.Utils" Version="0.7.0" />
+    <PackageReference Include="MedallionTopologicalSort" Version="1.0.0" />
+    <PackageReference Include="Duende.IdentityModel" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DevantlerTech.KubernetesProvisioner.GitOps.Core\DevantlerTech.KubernetesProvisioner.GitOps.Core.csproj" />
+    <ProjectReference Include="..\..\src\DevantlerTech.KubernetesProvisioner.Resources.Native\DevantlerTech.KubernetesProvisioner.Resources.Native.csproj" />
+  </ItemGroup>
+
+</Project>

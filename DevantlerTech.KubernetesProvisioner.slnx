@@ -1,0 +1,31 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.Cluster.Core/DevantlerTech.KubernetesProvisioner.Cluster.Core.csproj" />
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.Cluster.K3d/DevantlerTech.KubernetesProvisioner.Cluster.K3d.csproj" />
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.Cluster.Kind/DevantlerTech.KubernetesProvisioner.Cluster.Kind.csproj" />
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.CNI.Cilium/DevantlerTech.KubernetesProvisioner.CNI.Cilium.csproj" />
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.CNI.Core/DevantlerTech.KubernetesProvisioner.CNI.Core.csproj" />
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.Deployment.Core/DevantlerTech.KubernetesProvisioner.Deployment.Core.csproj" />
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.Deployment.Kubectl/DevantlerTech.KubernetesProvisioner.Deployment.Kubectl.csproj" />
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.GitOps.Core/DevantlerTech.KubernetesProvisioner.GitOps.Core.csproj" />
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.GitOps.Flux/DevantlerTech.KubernetesProvisioner.GitOps.Flux.csproj" />
+    <Project Path="src/DevantlerTech.KubernetesProvisioner.Resources.Native/DevantlerTech.KubernetesProvisioner.Resources.Native.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.Cluster.Core.Tests/DevantlerTech.KubernetesProvisioner.Cluster.Core.Tests.csproj" />
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.Cluster.K3d.Tests/DevantlerTech.KubernetesProvisioner.Cluster.K3d.Tests.csproj" />
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.Cluster.Kind.Tests/DevantlerTech.KubernetesProvisioner.Cluster.Kind.Tests.csproj" />
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.CNI.Cilium.Tests/DevantlerTech.KubernetesProvisioner.CNI.Cilium.Tests.csproj" />
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.CNI.Core.Tests/DevantlerTech.KubernetesProvisioner.CNI.Core.Tests.csproj" />
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.Deployment.Core.Tests/DevantlerTech.KubernetesProvisioner.Deployment.Core.Tests.csproj" />
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.Deployment.Kubectl.Tests/DevantlerTech.KubernetesProvisioner.Deployment.Kubectl.Tests.csproj" />
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.GitOps.Core.Tests/DevantlerTech.KubernetesProvisioner.GitOps.Core.Tests.csproj" />
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.GitOps.Flux.Tests/DevantlerTech.KubernetesProvisioner.GitOps.Flux.Tests.csproj" />
+    <Project Path="tests/DevantlerTech.KubernetesProvisioner.Resources.Native.Tests/DevantlerTech.KubernetesProvisioner.Resources.Native.Tests.csproj" />
+  </Folder>
+</Solution>
