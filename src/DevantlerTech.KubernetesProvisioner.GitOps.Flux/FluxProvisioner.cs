@@ -41,7 +41,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   /// <inheritdoc/>
   public async Task PushAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
-    long currentTimeEpoch = DateTime.Now.ToEpochTime();
+    long currentTimeEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     string revision = currentTimeEpoch.ToString(CultureInfo.InvariantCulture);
 
     await PushArtifactAsync(RegistryUri, kustomizationDirectory, revision, cancellationToken).ConfigureAwait(false);
