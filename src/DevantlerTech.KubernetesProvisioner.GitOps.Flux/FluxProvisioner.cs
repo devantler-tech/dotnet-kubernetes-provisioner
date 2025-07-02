@@ -4,7 +4,6 @@ using DevantlerTech.Commons.Extensions;
 using DevantlerTech.Commons.Utils;
 using DevantlerTech.KubernetesProvisioner.GitOps.Core;
 using DevantlerTech.KubernetesProvisioner.Resources.Native;
-using Duende.IdentityModel;
 using k8s;
 using Medallion.Collections;
 
