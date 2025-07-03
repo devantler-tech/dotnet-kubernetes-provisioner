@@ -120,7 +120,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
         {
           if (DateTime.UtcNow - startTime > TimeSpanHelper.ParseDuration(timeout))
           {
-             _ = semaphore.Release();
+            _ = semaphore.Release();
             throw new KubernetesGitOpsProvisionerException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'"))}");
           }
           await Task.Delay(2500, cancellationToken).ConfigureAwait(false);
