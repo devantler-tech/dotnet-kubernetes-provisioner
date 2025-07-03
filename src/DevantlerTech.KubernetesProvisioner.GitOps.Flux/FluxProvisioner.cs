@@ -104,39 +104,35 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
 
       var task = Task.Run(async () =>
       {
-        try
+        var args = new List<string>
         {
-          var args = new List<string>
+          "reconcile",
+          "kustomization",
+          kustomizationTuple.Name,
+          "--namespace", "flux-system",
+          "--with-source",
+          "--timeout", timeout
+        };
+        args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
+        args.AddIfNotNull("--context={0}", Context);
+        var startTime = DateTime.UtcNow;
+        while (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
+        {
+          if (DateTime.UtcNow - startTime > TimeSpanHelper.ParseDuration(timeout))
           {
-            "reconcile",
-            "kustomization",
-            kustomizationTuple.Name,
-            "--namespace", "flux-system",
-            "--with-source",
-            "--timeout", timeout
-          };
-          args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
-          args.AddIfNotNull("--context={0}", Context);
-          var startTime = DateTime.UtcNow;
-          while (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
-          {
-            if (DateTime.UtcNow - startTime > TimeSpanHelper.ParseDuration(timeout))
-            {
-              throw new KubernetesGitOpsProvisionerException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'"))}");
-            }
-            await Task.Delay(2500, cancellationToken).ConfigureAwait(false);
+             _ = semaphore.Release();
+            throw new KubernetesGitOpsProvisionerException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'"))}");
           }
-          var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
-          if (exitCode != 0)
-          {
-            throw new KubernetesGitOpsProvisionerException($"Failed to reconcile Kustomization");
-          }
-          reconciledKustomizations.Add(kustomizationTuple.Name);
+          await Task.Delay(2500, cancellationToken).ConfigureAwait(false);
         }
-        finally
+        var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
+        if (exitCode != 0)
         {
           _ = semaphore.Release();
+          throw new KubernetesGitOpsProvisionerException($"Failed to reconcile Kustomization");
         }
+        reconciledKustomizations.Add(kustomizationTuple.Name);
+        _ = semaphore.Release();
       }, cancellationToken);
 
       tasks.Add(task);
