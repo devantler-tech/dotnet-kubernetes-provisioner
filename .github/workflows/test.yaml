@@ -22,21 +22,21 @@ jobs:
         with:
           persist-credentials: false
       - name: Install kind CLI
-        uses: jaxxstorm/action-install-gh-release@v2.1.0
+        uses: jaxxstorm/action-install-gh-release@6096f2a2bbfee498ced520b6922ac2c06e990ed2 # v2.1.0
         with:
           repo: kubernetes-sigs/kind
           extension-matching: disable
           rename-to: kind
           chmod: 0755
       - name: Install k3d CLI
-        uses: jaxxstorm/action-install-gh-release@v2.1.0
+        uses: jaxxstorm/action-install-gh-release@6096f2a2bbfee498ced520b6922ac2c06e990ed2 # v2.1.0
         with:
           repo: k3d-io/k3d
           extension-matching: disable
           rename-to: k3d
           chmod: 0755
       - name: Install talosctl CLI
-        uses: jaxxstorm/action-install-gh-release@v2.1.0
+        uses: jaxxstorm/action-install-gh-release@6096f2a2bbfee498ced520b6922ac2c06e990ed2 # v2.1.0
         with:
           repo: siderolabs/talos
           extension-matching: disable
@@ -44,11 +44,11 @@ jobs:
           rename-to: talosctl
           chmod: 0755
       - name: Install flux CLI
-        uses: jaxxstorm/action-install-gh-release@v2.1.0
+        uses: jaxxstorm/action-install-gh-release@6096f2a2bbfee498ced520b6922ac2c06e990ed2 # v2.1.0
         with:
           repo: fluxcd/flux2
       - name: Install ArgoCD CLI
-        uses: jaxxstorm/action-install-gh-release@v2.1.0
+        uses: jaxxstorm/action-install-gh-release@6096f2a2bbfee498ced520b6922ac2c06e990ed2 # v2.1.0
         with:
           repo: argoproj/argo-cd
           extension-matching: disable
@@ -57,7 +57,7 @@ jobs:
       - uses: azure/setup-kubectl@v4
       - uses: azure/setup-helm@v4.3.0
       - name: Install Cilium CLI
-        uses: jaxxstorm/action-install-gh-release@v2.1.0
+        uses: jaxxstorm/action-install-gh-release@6096f2a2bbfee498ced520b6922ac2c06e990ed2 # v2.1.0
         with:
           repo: cilium/cilium-cli
       - name: Test .NET solution or project
