@@ -105,7 +105,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
       var task = Task.Run(async () =>
       {
         int dependencyCount = GetDependencyCount(kustomizationTuples, kustomizationTuple) + 1;
-        string effectiveTimeout = TimeSpanHelper.ParseDuration(timeout).Multiply(dependencyCount).ToString();
+        var effectiveTimeout = TimeSpanHelper.ParseDuration(timeout).Multiply(dependencyCount);
 
         var args = new List<string>
         {
@@ -114,7 +114,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
           kustomizationTuple.Name,
           "--namespace", "flux-system",
           "--with-source",
-          "--timeout", effectiveTimeout
+          "--timeout", $"{effectiveTimeout.TotalSeconds.ToString(CultureInfo.InvariantCulture)}s"
         };
         args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
         args.AddIfNotNull("--context={0}", Context);
