@@ -129,7 +129,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
           var elapsed = DateTime.UtcNow - startTime;
           var remaining = effectiveTimeout - elapsed;
           Console.WriteLine(
-            "◎ '{0}' waiting for dependencies: {1}. Timeout in {2} seconds. ",
+            "  '{0}' waiting for {1}. Timeout in {2} seconds. ",
             kustomizationTuple.Name,
             string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'")),
             Math.Max(0, remaining.TotalSeconds).ToString("F2", CultureInfo.InvariantCulture)
