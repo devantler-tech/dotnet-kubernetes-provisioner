@@ -133,9 +133,10 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
           var elapsed = DateTime.UtcNow - startTime;
           var remaining = TimeSpanHelper.ParseDuration(effectiveTimeout) - elapsed;
           Console.WriteLine(
-            "◎ Timeout in {0} seconds. Waiting for dependencies: {1}",
+            "◎ {0} waiting for dependencies: {1}. Timeout in {2} seconds. ",
+            kustomizationTuple.Name,
+            string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'")),
             Math.Max(0, remaining.TotalSeconds).ToString("F2", CultureInfo.InvariantCulture),
-            string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'"))
           );
           await Task.Delay(2500, cancellationToken).ConfigureAwait(false);
         }
