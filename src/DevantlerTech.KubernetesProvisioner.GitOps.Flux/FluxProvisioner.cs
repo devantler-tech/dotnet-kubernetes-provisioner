@@ -108,7 +108,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
         if (string.Equals(kustomizationTuple.Name, "flux-system", StringComparison.OrdinalIgnoreCase))
         {
           var baseTimeout = TimeSpanHelper.ParseDuration(timeout);
-          effectiveTimeout = (baseTimeout * kustomizationCount).ToString();
+          effectiveTimeout = TimeSpanHelper.ParseDuration((baseTimeout * kustomizationCount).ToString()).ToString();
         }
 
         var args = new List<string>
