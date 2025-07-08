@@ -104,12 +104,8 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
 
       var task = Task.Run(async () =>
       {
-        string effectiveTimeout = timeout;
-        if (string.Equals(kustomizationTuple.Name, "flux-system", StringComparison.OrdinalIgnoreCase))
-        {
-          var baseTimeout = TimeSpanHelper.ParseDuration(timeout) * kustomizationCount;
-          effectiveTimeout = TimeSpanHelper.ParseDuration(baseTimeout.ToString()).ToString();
-        }
+        int dependencyCount = kustomizationTuple.Item2.Count() + 1;
+        string effectiveTimeout = TimeSpanHelper.ParseDuration(timeout).Multiply(dependencyCount).ToString();
 
         var args = new List<string>
         {
@@ -133,7 +129,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
           var elapsed = DateTime.UtcNow - startTime;
           var remaining = TimeSpanHelper.ParseDuration(effectiveTimeout) - elapsed;
           Console.WriteLine(
-            "◎ {0} waiting for dependencies: {1}. Timeout in {2} seconds. ",
+            "◎ '{0}' waiting for dependencies: {1}. Timeout in {2} seconds. ",
             kustomizationTuple.Name,
             string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'")),
             Math.Max(0, remaining.TotalSeconds).ToString("F2", CultureInfo.InvariantCulture)
