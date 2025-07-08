@@ -64,7 +64,6 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   /// <inheritdoc/>
   public async Task ReconcileAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
-    // sync the OCI source
     var args = new List<string>
     {
       "reconcile",
@@ -98,12 +97,20 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
     var reconciledKustomizations = new ConcurrentBag<string>();
     using var semaphore = new SemaphoreSlim(10);
     var tasks = new List<Task>();
+    int kustomizationCount = kustomizationTuples.Count;
     foreach (var kustomizationTuple in kustomizationTuples)
     {
       await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
       var task = Task.Run(async () =>
       {
+        string effectiveTimeout = timeout;
+        if (string.Equals(kustomizationTuple.Name, "flux-system", StringComparison.OrdinalIgnoreCase))
+        {
+          var baseTimeout = TimeSpanHelper.ParseDuration(timeout);
+          effectiveTimeout = (baseTimeout * kustomizationCount).ToString();
+        }
+
         var args = new List<string>
         {
           "reconcile",
@@ -111,14 +118,14 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
           kustomizationTuple.Name,
           "--namespace", "flux-system",
           "--with-source",
-          "--timeout", timeout
+          "--timeout", effectiveTimeout
         };
         args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
         args.AddIfNotNull("--context={0}", Context);
         var startTime = DateTime.UtcNow;
         while (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
         {
-          if (DateTime.UtcNow - startTime > TimeSpanHelper.ParseDuration(timeout))
+          if (DateTime.UtcNow - startTime > TimeSpanHelper.ParseDuration(effectiveTimeout))
           {
             _ = semaphore.Release();
             throw new KubernetesGitOpsProvisionerException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'"))}");
