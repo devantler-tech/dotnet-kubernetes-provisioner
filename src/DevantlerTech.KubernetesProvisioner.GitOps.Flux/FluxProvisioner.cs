@@ -104,7 +104,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
 
       var task = Task.Run(async () =>
       {
-        int dependencyCount = kustomizationTuple.Item2.Count() + 1;
+        int dependencyCount = GetDependencyCount(kustomizationTuples, kustomizationTuple) + 1;
         string effectiveTimeout = TimeSpanHelper.ParseDuration(timeout).Multiply(dependencyCount).ToString();
 
         var args = new List<string>
@@ -150,6 +150,23 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
     }
 
     await Task.WhenAll(tasks).ConfigureAwait(false);
+  }
+
+  static int GetDependencyCount(List<(string Name, IEnumerable<string>)> kustomizationTuples, (string Name, IEnumerable<string>) kustomizationTuple)
+  {
+    var visited = new HashSet<string>();
+    void Visit(string name)
+    {
+      if (!visited.Add(name))
+        return;
+      var kustom = kustomizationTuples.FirstOrDefault(k => k.Name == name);
+      foreach (string? dep in kustom.Item2)
+        Visit(dep);
+    }
+    foreach (string? dep in kustomizationTuple.Item2)
+      Visit(dep);
+    int dependencyCount = visited.Count;
+    return dependencyCount;
   }
 
   /// <summary>
