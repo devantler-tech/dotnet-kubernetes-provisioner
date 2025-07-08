@@ -136,7 +136,7 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
             "◎ {0} waiting for dependencies: {1}. Timeout in {2} seconds. ",
             kustomizationTuple.Name,
             string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'")),
-            Math.Max(0, remaining.TotalSeconds).ToString("F2", CultureInfo.InvariantCulture),
+            Math.Max(0, remaining.TotalSeconds).ToString("F2", CultureInfo.InvariantCulture)
           );
           await Task.Delay(2500, cancellationToken).ConfigureAwait(false);
         }
