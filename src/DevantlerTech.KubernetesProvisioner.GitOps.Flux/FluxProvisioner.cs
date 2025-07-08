@@ -121,13 +121,13 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
         var startTime = DateTime.UtcNow;
         while (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
         {
-          if (DateTime.UtcNow - startTime > TimeSpanHelper.ParseDuration(effectiveTimeout))
+          if (DateTime.UtcNow - startTime > effectiveTimeout)
           {
             _ = semaphore.Release();
             throw new KubernetesGitOpsProvisionerException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'"))}");
           }
           var elapsed = DateTime.UtcNow - startTime;
-          var remaining = TimeSpanHelper.ParseDuration(effectiveTimeout) - elapsed;
+          var remaining = effectiveTimeout - elapsed;
           Console.WriteLine(
             "◎ '{0}' waiting for dependencies: {1}. Timeout in {2} seconds. ",
             kustomizationTuple.Name,
