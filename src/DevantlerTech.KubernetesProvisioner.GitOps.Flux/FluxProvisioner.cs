@@ -107,8 +107,8 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
         string effectiveTimeout = timeout;
         if (string.Equals(kustomizationTuple.Name, "flux-system", StringComparison.OrdinalIgnoreCase))
         {
-          var baseTimeout = TimeSpanHelper.ParseDuration(timeout);
-          effectiveTimeout = TimeSpanHelper.ParseDuration((baseTimeout * kustomizationCount).ToString()).ToString();
+          var baseTimeout = TimeSpanHelper.ParseDuration(timeout) * kustomizationCount;
+          effectiveTimeout = TimeSpanHelper.ParseDuration(baseTimeout.ToString()).ToString();
         }
 
         var args = new List<string>
@@ -130,8 +130,11 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
             _ = semaphore.Release();
             throw new KubernetesGitOpsProvisionerException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'"))}");
           }
-          Console.WriteLine("◎ Timeout in {0} seconds. Waiting for dependencies: {1}",
-            TimeSpanHelper.ParseDuration(effectiveTimeout).TotalSeconds.ToString("F2", CultureInfo.InvariantCulture),
+          var elapsed = DateTime.UtcNow - startTime;
+          var remaining = TimeSpanHelper.ParseDuration(effectiveTimeout) - elapsed;
+          Console.WriteLine(
+            "◎ Timeout in {0} seconds. Waiting for dependencies: {1}",
+            Math.Max(0, remaining.TotalSeconds).ToString("F2", CultureInfo.InvariantCulture),
             string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'"))
           );
           await Task.Delay(2500, cancellationToken).ConfigureAwait(false);
