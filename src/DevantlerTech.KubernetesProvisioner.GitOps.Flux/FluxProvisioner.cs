@@ -64,7 +64,6 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   /// <inheritdoc/>
   public async Task ReconcileAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
-    // sync the OCI source
     var args = new List<string>
     {
       "reconcile",
@@ -98,12 +97,16 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
     var reconciledKustomizations = new ConcurrentBag<string>();
     using var semaphore = new SemaphoreSlim(10);
     var tasks = new List<Task>();
+    int kustomizationCount = kustomizationTuples.Count;
     foreach (var kustomizationTuple in kustomizationTuples)
     {
       await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
       var task = Task.Run(async () =>
       {
+        int dependencyCount = GetDependencyCount(kustomizationTuples, kustomizationTuple) + 1;
+        var effectiveTimeout = TimeSpanHelper.ParseDuration(timeout).Multiply(dependencyCount);
+
         var args = new List<string>
         {
           "reconcile",
@@ -111,18 +114,26 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
           kustomizationTuple.Name,
           "--namespace", "flux-system",
           "--with-source",
-          "--timeout", timeout
+          "--timeout", $"{effectiveTimeout.TotalSeconds.ToString(CultureInfo.InvariantCulture)}s"
         };
         args.AddIfNotNull("--kubeconfig={0}", Kubeconfig);
         args.AddIfNotNull("--context={0}", Context);
         var startTime = DateTime.UtcNow;
         while (kustomizationTuple.Item2.Any() && !kustomizationTuple.Item2.All(reconciledKustomizations.Contains))
         {
-          if (DateTime.UtcNow - startTime > TimeSpanHelper.ParseDuration(timeout))
+          if (DateTime.UtcNow - startTime > effectiveTimeout)
           {
             _ = semaphore.Release();
             throw new KubernetesGitOpsProvisionerException($"Reconciliation of '{kustomizationTuple.Name}' timed out. Waiting for dependencies: {string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'"))}");
           }
+          var elapsed = DateTime.UtcNow - startTime;
+          var remaining = effectiveTimeout - elapsed;
+          Console.WriteLine(
+            "◎ '{0}' waiting for dependencies: {1}. Timeout in {2} seconds. ",
+            kustomizationTuple.Name,
+            string.Join(", ", kustomizationTuple.Item2.Select(d => $"'{d}'")),
+            Math.Max(0, remaining.TotalSeconds).ToString("F2", CultureInfo.InvariantCulture)
+          );
           await Task.Delay(2500, cancellationToken).ConfigureAwait(false);
         }
         var (exitCode, _) = await FluxCLI.Flux.RunAsync([.. args], cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -139,6 +150,23 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
     }
 
     await Task.WhenAll(tasks).ConfigureAwait(false);
+  }
+
+  static int GetDependencyCount(List<(string Name, IEnumerable<string>)> kustomizationTuples, (string Name, IEnumerable<string>) kustomizationTuple)
+  {
+    var visited = new HashSet<string>();
+    void Visit(string name)
+    {
+      if (!visited.Add(name))
+        return;
+      var kustom = kustomizationTuples.FirstOrDefault(k => k.Name == name);
+      foreach (string? dep in kustom.Item2)
+        Visit(dep);
+    }
+    foreach (string? dep in kustomizationTuple.Item2)
+      Visit(dep);
+    int dependencyCount = visited.Count;
+    return dependencyCount;
   }
 
   /// <summary>
