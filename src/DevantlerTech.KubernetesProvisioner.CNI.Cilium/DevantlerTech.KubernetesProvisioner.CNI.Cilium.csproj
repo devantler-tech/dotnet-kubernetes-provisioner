@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevantlerTech.CiliumCLI" Version="1.7.2" />
+    <PackageReference Include="DevantlerTech.CiliumCLI" Version="1.7.3" />
   </ItemGroup>
 
   <ItemGroup>
