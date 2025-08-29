@@ -40,6 +40,9 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   /// <inheritdoc/>
   public async Task PushAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
+    ArgumentException.ThrowIfNullOrWhiteSpace(kustomizationDirectory, nameof(kustomizationDirectory));
+    ArgumentException.ThrowIfNullOrWhiteSpace(timeout, nameof(timeout));
+    
     long currentTimeEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     string revision = currentTimeEpoch.ToString(CultureInfo.InvariantCulture);
 
@@ -67,6 +70,9 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   /// <inheritdoc/>
   public async Task ReconcileAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
+    ArgumentException.ThrowIfNullOrWhiteSpace(kustomizationDirectory, nameof(kustomizationDirectory));
+    ArgumentException.ThrowIfNullOrWhiteSpace(timeout, nameof(timeout));
+    
     var args = new List<string>
     {
       "reconcile",
@@ -190,17 +196,20 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   }
 
   /// <summary>
-  /// Push an artifact to a Flux registry.
+  /// Push an artifact to a Flux OCI registry.
   /// </summary>
-  /// <param name="registryUri"></param>
-  /// <param name="manifestsDirectory"></param>
-  /// <param name="revision"></param>
-  /// <param name="cancellationToken"></param>
-  /// <returns></returns>
-  /// <exception cref="KubernetesGitOpsProvisionerException"></exception>
+  /// <param name="registryUri">The URI of the OCI registry where the artifact will be pushed.</param>
+  /// <param name="manifestsDirectory">The directory containing the manifests to package and push.</param>
+  /// <param name="revision">The revision tag to use for the artifact.</param>
+  /// <param name="cancellationToken">A token to cancel the operation.</param>
+  /// <returns>A task representing the asynchronous operation.</returns>
+  /// <exception cref="KubernetesGitOpsProvisionerException">Thrown when the push operation fails.</exception>
   public static async Task PushArtifactAsync(Uri registryUri, string manifestsDirectory, string revision, CancellationToken cancellationToken = default)
   {
     ArgumentNullException.ThrowIfNull(registryUri, nameof(registryUri));
+    ArgumentException.ThrowIfNullOrWhiteSpace(manifestsDirectory, nameof(manifestsDirectory));
+    ArgumentException.ThrowIfNullOrWhiteSpace(revision, nameof(revision));
+    
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
       "push",
       "artifact",
@@ -217,15 +226,18 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   }
 
   /// <summary>
-  /// Tag an artifact.
+  /// Tag an artifact with the "latest" tag in the OCI registry.
   /// </summary>
-  /// <param name="registryUri"></param>
-  /// <param name="revision"></param>
-  /// <param name="cancellationToken"></param>
-  /// <returns></returns>
-  /// <exception cref="KubernetesGitOpsProvisionerException"></exception>
+  /// <param name="registryUri">The URI of the OCI registry containing the artifact.</param>
+  /// <param name="revision">The revision of the artifact to tag as "latest".</param>
+  /// <param name="cancellationToken">A token to cancel the operation.</param>
+  /// <returns>A task representing the asynchronous operation.</returns>
+  /// <exception cref="KubernetesGitOpsProvisionerException">Thrown when the tag operation fails.</exception>
   public static async Task TagArtifactAsync(Uri registryUri, string revision, CancellationToken cancellationToken = default)
   {
+    ArgumentNullException.ThrowIfNull(registryUri, nameof(registryUri));
+    ArgumentException.ThrowIfNullOrWhiteSpace(revision, nameof(revision));
+    
     var (exitCode, _) = await FluxCLI.Flux.RunAsync([
         "tag",
         "artifact",

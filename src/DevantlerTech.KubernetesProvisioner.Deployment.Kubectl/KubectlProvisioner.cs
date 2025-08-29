@@ -120,6 +120,9 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
   /// <inheritdoc/>
   public async Task ReconcileAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
+    ArgumentException.ThrowIfNullOrWhiteSpace(kustomizationDirectory, nameof(kustomizationDirectory));
+    ArgumentException.ThrowIfNullOrWhiteSpace(timeout, nameof(timeout));
+    
     var args = new List<string>
     {
       "rollout",
