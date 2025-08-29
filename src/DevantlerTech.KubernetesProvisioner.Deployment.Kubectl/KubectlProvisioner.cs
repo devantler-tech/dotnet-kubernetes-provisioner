@@ -18,14 +18,17 @@ public class KubectlProvisioner(string? kubeconfig = default, string? context = 
   public string? Context { get; set; } = context;
 
   /// <summary>
-  /// Applies a kustomization to the Kubernetes cluster using kubectl.
+  /// Applies a kustomization to the Kubernetes cluster using kubectl with apply-set functionality.
   /// </summary>
-  /// <param name="kustomizationDirectory"></param>
-  /// <param name="timeout"></param>
-  /// <param name="cancellationToken"></param>
-  /// <returns></returns>
+  /// <param name="kustomizationDirectory">The directory containing the kustomization to apply.</param>
+  /// <param name="timeout">The timeout for the kubectl apply operation (e.g., "5m", "10s").</param>
+  /// <param name="cancellationToken">A token to cancel the operation.</param>
+  /// <returns>A task representing the asynchronous operation.</returns>
   public async Task PushAsync(string kustomizationDirectory, string timeout = "5m", CancellationToken cancellationToken = default)
   {
+    ArgumentException.ThrowIfNullOrWhiteSpace(kustomizationDirectory, nameof(kustomizationDirectory));
+    ArgumentException.ThrowIfNullOrWhiteSpace(timeout, nameof(timeout));
+    
     var args = new List<string>
     {
       "get",

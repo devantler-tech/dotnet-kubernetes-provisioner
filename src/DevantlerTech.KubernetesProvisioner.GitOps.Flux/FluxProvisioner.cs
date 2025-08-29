@@ -48,15 +48,18 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   }
 
   /// <summary>
-  /// Install Flux on the Kubernetes cluster.
+  /// Install Flux on the Kubernetes cluster and configure it with an OCI source and kustomization.
   /// </summary>
-  /// <param name="ociSourceUrl"></param>
-  /// <param name="kustomizationDirectory"></param>
-  /// <param name="insecure"></param>
-  /// <param name="cancellationToken"></param>
-  /// <returns></returns>
+  /// <param name="ociSourceUrl">The URL of the OCI repository to use as the source.</param>
+  /// <param name="kustomizationDirectory">The directory path within the OCI repository containing the kustomization.</param>
+  /// <param name="insecure">Whether to allow insecure connections to the OCI registry.</param>
+  /// <param name="cancellationToken">A token to cancel the operation.</param>
+  /// <returns>A task representing the asynchronous operation.</returns>
   public async Task InstallAsync(Uri ociSourceUrl, string kustomizationDirectory, bool insecure = false, CancellationToken cancellationToken = default)
   {
+    ArgumentNullException.ThrowIfNull(ociSourceUrl, nameof(ociSourceUrl));
+    ArgumentException.ThrowIfNullOrWhiteSpace(kustomizationDirectory, nameof(kustomizationDirectory));
+    
     await InstallAsync(cancellationToken).ConfigureAwait(false);
     await CreateOCISourceAsync(ociSourceUrl, insecure: insecure, interval: "30s", cancellationToken: cancellationToken).ConfigureAwait(false);
     await CreateKustomizationAsync(kustomizationDirectory, interval: "1m", cancellationToken).ConfigureAwait(false);
@@ -295,14 +298,17 @@ public partial class FluxProvisioner(Uri registryUri, string? registryUserName =
   }
 
   /// <summary>
-  /// Create a Kustomization.
+  /// Create a Kustomization resource in the Flux system namespace.
   /// </summary>
-  /// <param name="kustomizationDirectory"></param>
-  /// <param name="interval"></param>
-  /// <param name="cancellationToken"></param>
-  /// <returns></returns>
+  /// <param name="kustomizationDirectory">The directory path within the source containing the kustomization.</param>
+  /// <param name="interval">The interval at which to reconcile the kustomization (e.g., "5m", "1h").</param>
+  /// <param name="cancellationToken">A token to cancel the operation.</param>
+  /// <returns>A task representing the asynchronous operation.</returns>
   public async Task CreateKustomizationAsync(string kustomizationDirectory, string interval = "5m", CancellationToken cancellationToken = default)
   {
+    ArgumentException.ThrowIfNullOrWhiteSpace(kustomizationDirectory, nameof(kustomizationDirectory));
+    ArgumentException.ThrowIfNullOrWhiteSpace(interval, nameof(interval));
+    
     var args = new List<string>
     {
       "create",
