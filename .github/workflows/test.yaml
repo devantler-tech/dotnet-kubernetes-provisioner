@@ -61,7 +61,7 @@ jobs:
         with:
           repo: cilium/cilium-cli
       - name: Test .NET solution or project
-        uses: devantler-tech/composite-actions/dotnet-test-action@d4b23f9e20423712a3300a63bdbaf4ac70fee721 # v.1.9.2
+        uses: devantler-tech/composite-actions/dotnet-test-action@005c37f8ef5e1811388cf19b3b93eb721351b6be # v.1.9.5
         with:
           app_id: ${{ vars.APP_ID }}
           app_private_key: ${{ secrets.APP_PRIVATE_KEY }}
