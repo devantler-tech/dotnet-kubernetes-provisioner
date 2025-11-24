@@ -10,6 +10,6 @@ permissions:
 
 jobs:
   publish:
-    uses: devantler-tech/reusable-workflows/.github/workflows/cd-dotnet-library-publish.yaml@0763de30f9598601916680b2f52c9f41f14082df # v1.21.0
+    uses: devantler-tech/reusable-workflows/.github/workflows/cd-dotnet-library-publish.yaml@6e090583500faddbf48c4ef3af02e6b89db1913f # v1.22.3
     secrets:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
